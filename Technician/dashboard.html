@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mule QuickFix | Technician</title>
+
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f5f7fb;color:#172033}
+header{background:#0b5cff;color:#fff;padding:16px;position:sticky;top:0;z-index:5}
+.head{max-width:700px;margin:auto;display:flex;justify-content:space-between;align-items:center}
+.logo{font-weight:900;font-size:18px}
+.role{font-size:10px;background:#ffffff22;padding:5px 8px;border-radius:8px;margin-left:5px}
+.logout{border:0;background:#ffffff20;color:#fff;padding:9px 12px;border-radius:10px;font-weight:bold}
+main{max-width:700px;margin:auto;padding:20px 15px 100px}
+.welcome h1{font-size:25px;margin:0 0 6px}
+.welcome p{margin:0;color:#697586;font-size:14px}
+.card{background:#fff;border-radius:20px;padding:18px;margin-top:16px;box-shadow:0 5px 20px #1720330d}
+.status{display:flex;justify-content:space-between;align-items:center}
+.status b{font-size:15px}
+.status small{color:#687386}
+.toggle{border:0;padding:10px 15px;border-radius:12px;background:#e5e7eb;font-weight:bold}
+.toggle.on{background:#16a34a;color:#fff}
+.pending{background:#fff8df;color:#705600;border-left:4px solid #f0b400}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+.stat{background:#fff;border-radius:17px;padding:16px 8px;text-align:center;box-shadow:0 4px 15px #1720330b}
+.icon{font-size:23px}
+.num{font-size:19px;font-weight:900;margin-top:5px}
+.label{font-size:11px;color:#7b8492;margin-top:4px}
+.title{font-size:18px;font-weight:900;margin:25px 0 12px}
+.job{background:#fff;border-radius:18px;padding:17px;margin:10px 0;box-shadow:0 4px 15px #1720330c}
+.jobtop{display:flex;justify-content:space-between;gap:10px}
+.service{font-weight:900;font-size:16px}
+.badge{font-size:10px;background:#eef4ff;color:#0b5cff;padding:6px 8px;border-radius:8px;font-weight:bold}
+.info{font-size:13px;color:#687386;line-height:1.7;margin-top:8px}
+.desc{font-size:13px;line-height:1.5;margin:8px 0}
+.accept{width:100%;border:0;background:#0b5cff;color:white;padding:13px;border-radius:12px;font-weight:800;margin-top:8px}
+.empty{text-align:center;color:#687386;padding:25px;font-size:14px}
+nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e5e7eb;height:68px;display:flex;justify-content:center;z-index:10}
+.nav{max-width:700px;width:100%;display:grid;grid-template-columns:repeat(3,1fr)}
+.nav button{border:0;background:#fff;color:#77808f;font-weight:bold;font-size:11px}
+.nav button:first-child{color:#0b5cff}
+.nav span{display:block;font-size:21px;margin-bottom:4px}
+#msg{display:none;padding:13px;border-radius:12px;background:#fff0f0;color:#a32626;margin-top:15px;font-size:13px}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="head">
+<div>
+<span class="logo">🔧 MULE QUICKFIX</span>
+<span class="role">PRO</span>
+</div>
+<button class="logout" id="logout">Logout</button>
+</div>
+</header>
+
+<main>
+
+<div class="welcome">
+<h1>Hello, <span id="name">Professional</span> 👋</h1>
+<p>Ready to help customers today?</p>
+</div>
+
+<div id="msg"></div>
+
+<div class="card">
+<div class="status">
+<div>
+<b>Your Availability</b><br>
+<small id="status">You are offline</small>
+</div>
+<button id="toggle" class="toggle">Go Online</button>
+</div>
+</div>
+
+<div id="pending" class="card pending" style="display:none">
+<b>⏳ Application Under Review</b>
+<p>Your professional account is waiting for approval. You will receive jobs after approval.</p>
+</div>
+
+<div class="stats">
+
+<div class="stat">
+<div class="icon">🛠️</div>
+<div class="num" id="jobs">0</div>
+<div class="label">Jobs Completed</div>
+</div>
+
+<div class="stat">
+<div class="icon">⭐</div>
+<div class="num" id="rating">0.0</div>
+<div class="label">Rating</div>
+</div>
+
+<div class="stat">
+<div class="icon">💰</div>
+<div class="num" id="earnings">K0</div>
+<div class="label">Earnings</div>
+</div>
+
+</div>
+
+<div class="title">Available Jobs</div>
+
+<div id="jobList">
+<div class="card empty">Loading available jobs...</div>
+</div>
+
+</main>
+
+<nav>
+<div class="nav">
+<button onclick="location.href='dashboard.html'">
+<span>🏠</span>Home
+</button>
+<button onclick="location.href='jobs.html'">
+<span>🛠️</span>My Jobs
+</button>
+<button onclick="alert('Profile coming next')">
+<span>👤</span>Profile
+</button>
+</div>
+</nav>
+
+<script type="module">
+
+import{auth,db}from"../js/firebase.js";
+import{onAuthStateChanged,signOut}from"https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import{ref,get,update,onValue,query,orderByChild,equalTo}from"https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+
+let user,data,online=false;
+const $=x=>document.getElementById(x);
+
+onAuthStateChanged(auth,async u=>{
+
+if(!u){location.href="../login.html";return}
+
+user=u;
+
+const s=await get(ref(db,"users/"+u.uid));
+
+if(!s.exists()){location.href="../login.html";return}
+
+data=s.val();
+
+if(data.role!=="technician"){location.href="../login.html";return}
+
+$("name").textContent=data.fullName||"Professional";
+$("jobs").textContent=data.jobsCompleted||0;
+$("rating").textContent=Number(data.rating||0).toFixed(1);
+$("earnings").textContent="K"+Number(data.totalEarnings||0).toLocaleString();
+
+if(data.status==="pending"){
+$("pending").style.display="block";
+$("toggle").disabled=true;
+$("status").textContent="Waiting for approval";
+return;
+}
+
+if(data.status==="suspended"){
+$("status").textContent="Account suspended";
+$("toggle").disabled=true;
+return;
+}
+
+online=data.availability==="online";
+setStatus();
+loadJobs();
+
+});
+
+function setStatus(){
+
+$("status").textContent=online?"🟢 You are online":"⚫ You are offline";
+$("toggle").textContent=online?"Go Offline":"Go Online";
+$("toggle").className=online?"toggle on":"toggle";
+
+}
+
+$("toggle").onclick=async()=>{
+
+if(data.status!=="approved"){
+alert("Your account must be approved first.");
+return;
+}
+
+online=!online;
+
+await update(ref(db,"users/"+user.uid),{
+availability:online?"online":"offline",
+updatedAt:Date.now()
+});
+
+data.availability=online?"online":"offline";
+setStatus();
+
+};
+
+function loadJobs(){
+
+const q=query(
+ref(db,"jobs"),
+orderByChild("status"),
+equalTo("pending")
+);
+
+onValue(q,s=>{
+
+$("jobList").innerHTML="";
+
+if(!s.exists()){
+$("jobList").innerHTML=
+"<div class='card empty'>🔎<br><br>No available jobs right now.<br>New customer requests will appear here.</div>";
+return;
+}
+
+s.forEach(x=>{
+
+let j=x.val();
+
+let d=document.createElement("div");
+d.className="job";
+
+d.innerHTML=`
+<div class="jobtop">
+<div class="service">${safe(j.service||"Service Request")}</div>
+<div class="badge">${safe(j.urgency||"Normal")}</div>
+</div>
+
+<div class="desc">${safe(j.description||"No description provided.")}</div>
+
+<div class="info">
+📍 ${safe(j.location||"Location not provided")}<br>
+🏙️ ${safe(j.city||"")}<br>
+🕐 Customer request
+</div>
+
+<button class="accept">Accept Job</button>
+`;
+
+d.querySelector(".accept").onclick=
+()=>accept(j.id,d.querySelector(".accept"));
+
+$("jobList").appendChild(d);
+
+});
+
+});
+
+}
+
+async function accept(id,button){
+
+if(!online){
+alert("Please go online before accepting a job.");
+return;
+}
+
+button.disabled=true;
+button.textContent="Accepting...";
+
+const r=ref(db,"jobs/"+id);
+const s=await get(r);
+
+if(!s.exists()||s.val().status!=="pending"){
+alert("This job has already been taken.");
+button.disabled=false;
+button.textContent="Accept Job";
+return;
+}
+
+await update(r,{
+status:"accepted",
+technicianId:user.uid,
+technicianName:data.fullName||"Professional",
+acceptedAt:Date.now(),
+updatedAt:Date.now()
+});
+
+location.href="jobs.html";
+
+}
+
+function safe(v){
+
+return String(v)
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;");
+
+}
+
+$("logout").onclick=async()=>{
+await signOut(auth);
+location.href="../login.html";
+};
+
+</script>
+
+</body>
+</html>
