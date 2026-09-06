@@ -6,27 +6,52 @@
 <meta name="theme-color" content="#173b8f">
 <title>CEO Dashboard | Mule QuickFix</title>
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f4f7fc;color:#172033}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f4f7fc;color:#172033}
 header{background:#173b8f;color:#fff;padding:14px;position:sticky;top:0;z-index:5}
 .head{max-width:900px;margin:auto;display:flex;justify-content:space-between;align-items:center}
 .logo{font-weight:800}.logout{background:#fff;color:#173b8f;border:0;border-radius:8px;padding:9px;font-weight:bold}
-main{max-width:900px;margin:auto;padding:14px 11px 40px}h1{margin:4px 0;font-size:23px}.sub{font-size:12px;color:#667085;margin-bottom:14px}
-.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.stat{background:#fff;padding:12px;border-radius:13px;box-shadow:0 2px 10px #0001}.stat b{display:block;color:#173b8f;font-size:18px}.stat span{font-size:9px;color:#667085}
-.section{background:#fff;border-radius:15px;padding:13px;margin-top:14px;box-shadow:0 2px 10px #0001}.section h2{font-size:16px;margin:0 0 10px}
+main{max-width:900px;margin:auto;padding:14px 11px 40px}
+h1{margin:4px 0;font-size:23px}.sub{font-size:12px;color:#667085;margin-bottom:14px}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.stat{background:#fff;padding:12px;border-radius:13px;box-shadow:0 2px 10px #0001}
+.stat b{display:block;color:#173b8f;font-size:18px}.stat span{font-size:9px;color:#667085}
+.section{background:#fff;border-radius:15px;padding:13px;margin-top:14px;box-shadow:0 2px 10px #0001}
+.section h2{font-size:16px;margin:0 0 10px}
 input,select{width:100%;padding:10px;border:1px solid #d8deea;border-radius:9px;margin-bottom:7px;background:#fff}
-button{border:0;border-radius:8px;padding:9px;font-weight:bold}.blue{background:#173b8f;color:#fff}.green{background:#198754;color:#fff}.red{background:#b42318;color:#fff}.orange{background:#c47a00;color:#fff}
-.card{border:1px solid #e1e6ef;border-radius:11px;padding:11px;margin-top:8px;font-size:12px}.title{font-weight:bold;color:#173b8f}.phone{background:#e9f8ef;padding:8px;border-radius:8px;margin-top:7px;font-weight:bold}.money{background:#f5f8ff;padding:8px;border-radius:8px;margin-top:7px;line-height:1.6}.actions{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}.badge{float:right;padding:4px 7px;border-radius:12px;font-size:9px;font-weight:bold}.pending{background:#fff2d7}.approved{background:#e7f7ed}.suspended,.rejected{background:#ffe5e5}.empty{text-align:center;padding:15px;color:#777;font-size:12px}
-.msg{display:none;padding:9px;border-radius:8px;margin-bottom:9px;font-size:12px}.ok{display:block;background:#e9f8ef;color:#176b39}.err{display:block;background:#ffecec;color:#a00}
+button{border:0;border-radius:8px;padding:9px;font-weight:bold}
+.blue{background:#173b8f;color:#fff}.green{background:#198754;color:#fff}
+.red{background:#b42318;color:#fff}.orange{background:#c47a00;color:#fff}
+.card{border:1px solid #e1e6ef;border-radius:11px;padding:11px;margin-top:8px;font-size:12px}
+.title{font-weight:bold;color:#173b8f}
+.phone{background:#e9f8ef;padding:8px;border-radius:8px;margin-top:7px;font-weight:bold}
+.money{background:#f5f8ff;padding:8px;border-radius:8px;margin-top:7px;line-height:1.6}
+.actions{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+.badge{float:right;padding:4px 7px;border-radius:12px;font-size:9px;font-weight:bold}
+.pending{background:#fff2d7}.approved{background:#e7f7ed}
+.suspended,.rejected{background:#ffe5e5}
+.empty{text-align:center;padding:15px;color:#777;font-size:12px}
+.msg{display:none;padding:9px;border-radius:8px;margin-bottom:9px;font-size:12px}
+.ok{display:block;background:#e9f8ef;color:#176b39}
+.err{display:block;background:#ffecec;color:#a00}
 @media(min-width:650px){.stats{grid-template-columns:repeat(4,1fr)}}
 </style>
 </head>
+
 <body>
 
-<header><div class="head"><div class="logo">🔧 MULE QUICKFIX CEO</div><button class="logout" id="logout">LOGOUT</button></div></header>
+<header>
+<div class="head">
+<div class="logo">🔧 MULE QUICKFIX CEO</div>
+<button class="logout" id="logout">LOGOUT</button>
+</div>
+</header>
 
 <main>
+
 <h1>CEO Dashboard</h1>
 <div class="sub">Manage customers, technicians, jobs and commissions.</div>
+
 <div id="msg" class="msg"></div>
 
 <div class="stats">
@@ -42,27 +67,42 @@ button{border:0;border-radius:8px;padding:9px;font-weight:bold}.blue{background:
 
 <div class="section">
 <h2>💰 Commission Settings</h2>
-<select id="ctype"><option value="percentage">Percentage</option><option value="fixed">Fixed Amount</option></select>
+<select id="ctype">
+<option value="percentage">Percentage</option>
+<option value="fixed">Fixed Amount</option>
+</select>
 <input id="crate" type="number" min="0" step=".01" placeholder="Commission">
-<button class="blue" onclick="saveSettings()">SAVE</button>
+<button class="blue" onclick="saveSettings()">SAVE SETTINGS</button>
 </div>
 
 <div class="section">
-<h2>💳 Commission Payments</h2>
+<h2>💳 Pending Commission Payments</h2>
 <div id="payments"><div class="empty">Loading...</div></div>
 </div>
 
 <div class="section">
-<h2>👨‍🔧 Technicians</h2>
+<h2>👨‍🔧 Technician Management</h2>
 <input id="ts" placeholder="Search technician...">
-<select id="tf"><option value="all">All</option><option value="pending">Pending</option><option value="approved">Approved</option><option value="suspended">Suspended</option><option value="rejected">Rejected</option></select>
+<select id="tf">
+<option value="all">All</option>
+<option value="pending">Pending</option>
+<option value="approved">Approved</option>
+<option value="suspended">Suspended</option>
+<option value="rejected">Rejected</option>
+</select>
 <div id="techList"></div>
 </div>
 
 <div class="section">
-<h2>📋 Jobs</h2>
+<h2>📋 Job Management</h2>
 <input id="js" placeholder="Search job/customer...">
-<select id="jf"><option value="all">All Jobs</option><option value="pending">Pending</option><option value="accepted">Accepted</option><option value="in_progress">In Progress</option><option value="completed">Completed</option></select>
+<select id="jf">
+<option value="all">All Jobs</option>
+<option value="pending">Pending</option>
+<option value="accepted">Accepted</option>
+<option value="in_progress">In Progress</option>
+<option value="completed">Completed</option>
+</select>
 <div id="jobList"></div>
 </div>
 
@@ -75,153 +115,618 @@ button{border:0;border-radius:8px;padding:9px;font-weight:bold}.blue{background:
 </main>
 
 <script type="module">
+
 import{auth,db}from"../js/firebase.js";
-import{onAuthStateChanged,signOut}from"https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-import{ref,get,set,update,onValue}from"https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+
+import{
+onAuthStateChanged,
+signOut
+}from"https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+import{
+ref,
+get,
+set,
+update,
+onValue
+}from"https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
 
 const CEO="ErJbrmeB4ARtVr5n9G7FxYEZxVa2";
-let users={},jobs={},settings={commissionType:"percentage",commissionRate:15};
+
+let users={};
+let jobs={};
+let settings={
+ commissionType:"percentage",
+ commissionRate:15
+};
 
 const $=id=>document.getElementById(id);
-const money=n=>"K"+Number(n||0).toFixed(2);
-function msg(t,e=false){$("msg").textContent=t;$("msg").className="msg "+(e?"err":"ok");setTimeout(()=>$("msg").style.display="none",3000)}
-function esc(x){return String(x??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
 
-onAuthStateChanged(auth,async u=>{
- if(!u||u.uid!==CEO){location.href="../login.html";return}
- await load();
+const money=n=>"K"+Number(n||0).toFixed(2);
+
+function esc(x){
+return String(x??"").replace(/[&<>"']/g,m=>({
+"&":"&amp;",
+"<":"&lt;",
+">":"&gt;",
+'"':"&quot;",
+"'":"&#39;"
+}[m]));
+}
+
+function msg(t,e=false){
+$("msg").textContent=t;
+$("msg").className="msg "+(e?"err":"ok");
+setTimeout(()=>{
+$("msg").style.display="none";
+},3000);
+}
+
+onAuthStateChanged(auth,async user=>{
+
+if(!user||user.uid!==CEO){
+location.href="../login.html";
+return;
+}
+
+await load();
+
 });
 
 async function load(){
- let u=await get(ref(db,"users"));users=u.val()||{};
- let j=await get(ref(db,"jobs"));jobs=j.val()||{};
- let s=await get(ref(db,"settings"));if(s.exists())settings=s.val();
- $("ctype").value=settings.commissionType||"percentage";
- $("crate").value=settings.commissionRate??15;
- render();
- onValue(ref(db,"jobs"),x=>{jobs=x.val()||{};render()});
- onValue(ref(db,"users"),x=>{users=x.val()||{};render()});
+
+try{
+
+let u=await get(ref(db,"users"));
+users=u.val()||{};
+
+let j=await get(ref(db,"jobs"));
+jobs=j.val()||{};
+
+/* Load protected customer phones */
+let cp=await get(ref(db,"customerPhones"));
+let phones=cp.val()||{};
+
+Object.keys(jobs).forEach(id=>{
+jobs[id].customerPhone=
+phones[id]&&phones[id].phone
+?phones[id].phone
+:"Not provided";
+});
+
+let s=await get(ref(db,"settings"));
+
+if(s.exists()){
+settings=s.val();
+}
+
+$("ctype").value=settings.commissionType||"percentage";
+$("crate").value=settings.commissionRate??15;
+
+render();
+
+/* Live jobs */
+onValue(ref(db,"jobs"),async snap=>{
+
+jobs=snap.val()||{};
+
+let p=await get(ref(db,"customerPhones"));
+let phones=p.val()||{};
+
+Object.keys(jobs).forEach(id=>{
+jobs[id].customerPhone=
+phones[id]&&phones[id].phone
+?phones[id].phone
+:"Not provided";
+});
+
+render();
+
+});
+
+/* Live users */
+onValue(ref(db,"users"),snap=>{
+users=snap.val()||{};
+render();
+});
+
+}catch(e){
+
+console.error(e);
+msg("Unable to load dashboard.",true);
+
+}
+
 }
 
 function commission(price){
- return settings.commissionType==="fixed"
- ?Number(settings.commissionRate||0)
- :Number(price||0)*Number(settings.commissionRate||0)/100;
+
+if(settings.commissionType==="fixed"){
+return Number(settings.commissionRate||0);
+}
+
+return Number(price||0)*
+Number(settings.commissionRate||0)/100;
+
 }
 
 window.saveSettings=async()=>{
- settings.commissionType=$("ctype").value;
- settings.commissionRate=Number($("crate").value||0);
- await set(ref(db,"settings"),settings);
- msg("Commission settings saved.");
- render();
+
+try{
+
+settings.commissionType=$("ctype").value;
+settings.commissionRate=Number($("crate").value||0);
+
+await set(ref(db,"settings"),settings);
+
+msg("Commission settings saved.");
+
+render();
+
+}catch(e){
+
+msg("Could not save settings.",true);
+
+}
+
 };
 
 function render(){
- let us=Object.values(users),js=Object.values(jobs);
- let cu=us.filter(x=>x.role==="customer"),te=us.filter(x=>x.role==="technician");
- let active=js.filter(x=>["pending","accepted","in_progress"].includes(x.status));
- let done=js.filter(x=>x.status==="completed");
- let value=js.reduce((a,x)=>a+Number(x.finalPrice||x.estimatedPrice||0),0);
- let rev=js.filter(x=>x.commissionStatus==="paid").reduce((a,x)=>a+Number(x.platformCommission||0),0);
 
- $("customers").textContent=cu.length;$("techs").textContent=te.length;
- $("pendingTech").textContent=te.filter(x=>x.status==="pending").length;
- $("active").textContent=active.length;$("done").textContent=done.length;
- $("jobs").textContent=js.length;$("value").textContent=money(value);$("revenue").textContent=money(rev);
+let us=Object.values(users);
+let js=Object.values(jobs);
 
- renderTech(te);renderJobs(js);renderCustomers(cu);renderPayments(js);
+let cu=us.filter(x=>x.role==="customer");
+let te=us.filter(x=>x.role==="technician");
+
+let active=js.filter(x=>
+["pending","accepted","in_progress"].includes(x.status)
+);
+
+let done=js.filter(x=>x.status==="completed");
+
+let value=js.reduce(
+(a,x)=>a+Number(x.finalPrice||x.estimatedPrice||0),0
+);
+
+let rev=js
+.filter(x=>x.commissionStatus==="paid")
+.reduce(
+(a,x)=>a+Number(x.platformCommission||0),0
+);
+
+$("customers").textContent=cu.length;
+$("techs").textContent=te.length;
+$("pendingTech").textContent=
+te.filter(x=>x.status==="pending").length;
+
+$("active").textContent=active.length;
+$("done").textContent=done.length;
+$("jobs").textContent=js.length;
+$("value").textContent=money(value);
+$("revenue").textContent=money(rev);
+
+renderTech(te);
+renderJobs(js);
+renderCustomers(cu);
+renderPayments(js);
+
 }
 
 function renderTech(list){
- let q=$("ts").value.toLowerCase(),f=$("tf").value;
- list=list.filter(x=>(f==="all"||x.status===f)&&((x.fullName||"")+" "+(x.phone||"")).toLowerCase().includes(q));
- $("techList").innerHTML=list.length?list.map(x=>`
- <div class="card">
- <span class="badge ${esc(x.status)}">${esc(x.status||"pending")}</span>
- <div class="title">${esc(x.fullName||"Technician")}</div>
- <div>${esc(x.service||"")} • ${esc(x.city||"")}</div>
- <div>📞 ${esc(x.phone||"")} • ${esc(x.experience||"")} experience</div>
- <div class="actions">
- ${x.status==="pending"?`<button class="green" onclick="tech('${x.uid}','approved')">APPROVE</button><button class="red" onclick="tech('${x.uid}','rejected')">REJECT</button>`:""}
- ${x.status==="approved"?`<button class="orange" onclick="tech('${x.uid}','suspended')">SUSPEND</button>`:""}
- ${x.status==="suspended"?`<button class="green" onclick="tech('${x.uid}','approved')">REACTIVATE</button>`:""}
- </div></div>`).join(""):"<div class='empty'>No technicians found.</div>";
+
+let q=$("ts").value.toLowerCase();
+let f=$("tf").value;
+
+list=list.filter(x=>
+(f==="all"||x.status===f)&&
+((x.fullName||"")+" "+(x.phone||""))
+.toLowerCase().includes(q)
+);
+
+$("techList").innerHTML=list.length?
+
+list.map(x=>`
+
+<div class="card">
+
+<span class="badge ${esc(x.status)}">
+${esc(x.status||"pending")}
+</span>
+
+<div class="title">
+${esc(x.fullName||"Technician")}
+</div>
+
+<div>
+${esc(x.service||"")} • ${esc(x.city||"")}
+</div>
+
+<div>
+📞 ${esc(x.phone||"No phone")}
+</div>
+
+<div>
+Experience: ${esc(x.experience||"Not provided")}
+</div>
+
+<div class="actions">
+
+${x.status==="pending"?`
+
+<button class="green"
+onclick="tech('${x.uid}','approved')">
+APPROVE
+</button>
+
+<button class="red"
+onclick="tech('${x.uid}','rejected')">
+REJECT
+</button>
+
+`:""}
+
+${x.status==="approved"?`
+
+<button class="orange"
+onclick="tech('${x.uid}','suspended')">
+SUSPEND
+</button>
+
+`:""}
+
+${x.status==="suspended"?`
+
+<button class="green"
+onclick="tech('${x.uid}','approved')">
+REACTIVATE
+</button>
+
+`:""}
+
+</div>
+
+</div>
+
+`).join("")
+
+:"<div class='empty'>No technicians found.</div>";
+
 }
 
 window.tech=async(uid,status)=>{
- await update(ref(db,"users/"+uid),{status});
- msg("Technician status updated.");
+
+try{
+
+await update(
+ref(db,"users/"+uid),
+{status}
+);
+
+msg("Technician status updated.");
+
+}catch(e){
+
+msg("Could not update technician.",true);
+
+}
+
 };
 
 function renderJobs(list){
- let q=$("js").value.toLowerCase(),f=$("jf").value;
- list=list.filter(x=>(f==="all"||x.status===f)&&JSON.stringify(x).toLowerCase().includes(q));
- $("jobList").innerHTML=list.length?list.map(x=>{
- let p=Number(x.finalPrice||x.estimatedPrice||0),c=Number(x.platformCommission??commission(p)),earn=p-c;
- return `<div class="card">
- <span class="badge">${esc(x.status||"pending")}</span>
- <div class="title">${esc(x.service||"Service")}</div>
- <div>Customer: ${esc(x.customerName||"")}</div>
- <div class="phone">📞 Customer: ${esc(x.customerPhone||"Not provided")}</div>
- <div>📍 ${esc(x.location||"")} • ${esc(x.city||"")}</div>
- <div>${esc(x.description||"")}</div>
- <div class="money">Final Price: <strong>${money(p)}</strong><br>Mule QuickFix: <strong>${money(c)}</strong><br>Technician: <strong>${money(earn)}</strong></div>
- <div class="actions"><button class="blue" onclick="price('${x.id}',${p})">SET PRICE</button><button class="orange" onclick="calc('${x.id}',${p})">CALCULATE</button></div>
- </div>`}).join(""):"<div class='empty'>No jobs found.</div>";
+
+let q=$("js").value.toLowerCase();
+let f=$("jf").value;
+
+list=list.filter(x=>
+(f==="all"||x.status===f)&&
+JSON.stringify(x).toLowerCase().includes(q)
+);
+
+$("jobList").innerHTML=list.length?
+
+list.map(x=>{
+
+let p=Number(
+x.finalPrice||x.estimatedPrice||0
+);
+
+let c=Number(
+x.platformCommission??
+commission(p)
+);
+
+let earn=p-c;
+
+return`
+
+<div class="card">
+
+<span class="badge">
+${esc(x.status||"pending")}
+</span>
+
+<div class="title">
+🔧 ${esc(x.service||"Service")}
+</div>
+
+<div>
+Customer: ${esc(x.customerName||"")}
+</div>
+
+<div class="phone">
+📞 Customer: ${esc(x.customerPhone||"Not provided")}
+</div>
+
+<div>
+📍 ${esc(x.location||"")} • ${esc(x.city||"")}
+</div>
+
+<div>
+${esc(x.description||"")}
+</div>
+
+<div>
+Urgency: <b>${esc(x.urgency||"normal")}</b>
+</div>
+
+<div class="money">
+
+Final Price:
+<strong>${money(p)}</strong><br>
+
+Mule QuickFix Commission:
+<strong>${money(c)}</strong><br>
+
+Technician Amount:
+<strong>${money(earn)}</strong><br>
+
+Commission Status:
+<strong>${esc(x.commissionStatus||"unpaid")}</strong>
+
+</div>
+
+<div class="actions">
+
+<button class="blue"
+onclick="price('${x.id}',${p})">
+SET PRICE
+</button>
+
+<button class="orange"
+onclick="calc('${x.id}',${p})">
+CALCULATE
+</button>
+
+</div>
+
+</div>
+
+`;
+
+}).join("")
+
+:"<div class='empty'>No jobs found.</div>";
+
 }
 
 window.price=async(id,current)=>{
- let v=prompt("Enter final job price in Kwacha:",current);
- if(v===null||isNaN(v)||Number(v)<0)return;
- let p=Number(v),c=commission(p);
- await update(ref(db,"jobs/"+id),{finalPrice:p,platformCommission:c,technicianAmount:p-c,updatedAt:Date.now()});
- msg("Job price updated.");
+
+let v=prompt(
+"Enter final job price in Kwacha:",
+current
+);
+
+if(
+v===null||
+isNaN(v)||
+Number(v)<0
+)return;
+
+let p=Number(v);
+let c=commission(p);
+
+try{
+
+await update(
+ref(db,"jobs/"+id),
+{
+finalPrice:p,
+platformCommission:c,
+technicianAmount:p-c,
+updatedAt:Date.now()
+}
+);
+
+msg("Job price updated.");
+
+}catch(e){
+
+msg("Could not update price.",true);
+
+}
+
 };
 
 window.calc=async(id,p)=>{
- let c=commission(p);
- await update(ref(db,"jobs/"+id),{platformCommission:c,technicianAmount:p-c,commissionRate:settings.commissionRate,updatedAt:Date.now()});
- msg("Commission calculated.");
+
+let c=commission(p);
+
+try{
+
+await update(
+ref(db,"jobs/"+id),
+{
+platformCommission:c,
+technicianAmount:p-c,
+commissionRate:Number(
+settings.commissionRate||15
+),
+updatedAt:Date.now()
+}
+);
+
+msg("Commission calculated.");
+
+}catch(e){
+
+msg("Could not calculate commission.",true);
+
+}
+
 };
 
 function renderPayments(list){
- let a=list.filter(x=>x.commissionStatus==="pending");
- $("payments").innerHTML=a.length?a.map(x=>`
- <div class="card">
- <div class="title">${esc(x.service)} — ${money(x.platformCommission)}</div>
- <div>Technician: ${esc(x.technicianName||"")}</div>
- <div>Reference: <b>${esc(x.commissionPaymentReference||"")}</b></div>
- <div class="actions">
- <button class="green" onclick="pay('${x.id}','paid')">CONFIRM</button>
- <button class="red" onclick="pay('${x.id}','unpaid')">REJECT</button>
- </div></div>`).join(""):"<div class='empty'>No pending commission payments.</div>";
+
+let a=list.filter(
+x=>x.commissionStatus==="pending"
+);
+
+$("payments").innerHTML=a.length?
+
+a.map(x=>`
+
+<div class="card">
+
+<div class="title">
+${esc(x.service||"Job")}
+—
+${money(x.platformCommission)}
+</div>
+
+<div>
+Technician:
+${esc(x.technicianName||"")}
+</div>
+
+<div>
+Reference:
+<b>${esc(x.commissionPaymentReference||"")}</b>
+</div>
+
+<div class="actions">
+
+<button class="green"
+onclick="pay('${x.id}','paid')">
+CONFIRM PAYMENT
+</button>
+
+<button class="red"
+onclick="pay('${x.id}','unpaid')">
+REJECT
+</button>
+
+</div>
+
+</div>
+
+`).join("")
+
+:"<div class='empty'>No pending commission payments.</div>";
+
 }
 
 window.pay=async(id,status)=>{
- let x=jobs[id]||{};
- if(status==="paid"){
-  let method=prompt("Payment method: Airtel Money, MTN Money or Zamtel Money");
-  if(!method)return;
-  await update(ref(db,"jobs/"+id),{commissionStatus:"paid",commissionPaymentMethod:method,commissionPaidAt:Date.now(),updatedAt:Date.now()});
- }else{
-  await update(ref(db,"jobs/"+id),{commissionStatus:"unpaid",commissionPaymentReference:null,updatedAt:Date.now()});
- }
- msg(status==="paid"?"Commission confirmed.":"Payment rejected.");
+
+let x=jobs[id]||{};
+
+try{
+
+if(status==="paid"){
+
+let method=prompt(
+"Payment method:\nAirtel Money\nMTN Money\nZamtel Money"
+);
+
+if(!method)return;
+
+await update(
+ref(db,"jobs/"+id),
+{
+commissionStatus:"paid",
+commissionPaymentMethod:method,
+commissionPaidAt:Date.now(),
+updatedAt:Date.now()
+}
+);
+
+msg("Commission payment confirmed.");
+
+}else{
+
+await update(
+ref(db,"jobs/"+id),
+{
+commissionStatus:"unpaid",
+commissionPaymentReference:null,
+updatedAt:Date.now()
+}
+);
+
+msg("Commission payment rejected.");
+
+}
+
+}catch(e){
+
+msg("Payment update failed.",true);
+
+}
+
 };
 
 function renderCustomers(list){
- let q=$("cs").value.toLowerCase();
- list=list.filter(x=>JSON.stringify(x).toLowerCase().includes(q));
- $("customerList").innerHTML=list.length?list.map(x=>`
- <div class="card"><div class="title">${esc(x.fullName||"Customer")}</div>
- <div>📞 ${esc(x.phone||"No phone")}</div><div>📧 ${esc(x.email||"")}</div>
- <div>📍 ${esc(x.city||"")}</div></div>`).join(""):"<div class='empty'>No customers found.</div>";
+
+let q=$("cs").value.toLowerCase();
+
+list=list.filter(x=>
+JSON.stringify(x).toLowerCase().includes(q)
+);
+
+$("customerList").innerHTML=list.length?
+
+list.map(x=>`
+
+<div class="card">
+
+<div class="title">
+${esc(x.fullName||"Customer")}
+</div>
+
+<div>
+📞 ${esc(x.phone||"No phone")}
+</div>
+
+<div>
+📧 ${esc(x.email||"")}
+</div>
+
+<div>
+📍 ${esc(x.city||"")}
+</div>
+
+</div>
+
+`).join("")
+
+:"<div class='empty'>No customers found.</div>";
+
 }
 
-["ts","tf","js","jf","cs"].forEach(id=>$(id).addEventListener("input",render));
+["ts","tf","js","jf","cs"].forEach(id=>{
 
-$("logout").onclick=async()=>{await signOut(auth);location.href="../login.html"};
+$(id).addEventListener("input",render);
+$(id).addEventListener("change",render);
+
+});
+
+$("logout").onclick=async()=>{
+
+await signOut(auth);
+location.href="../login.html";
+
+};
+
 </script>
 
 </body>
