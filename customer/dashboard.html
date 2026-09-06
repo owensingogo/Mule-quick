@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#173b8f">
+<title>Customer Dashboard | Mule QuickFix</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f4f7fc;color:#172033}
+header{background:#173b8f;color:#fff;padding:14px}
+.head{display:flex;justify-content:space-between;align-items:center;max-width:900px;margin:auto}
+.logo{font-weight:800}
+button{border:0;border-radius:9px;padding:10px;font-weight:bold}
+.logout{background:#fff;color:#173b8f}
+main{max-width:900px;margin:auto;padding:15px 12px 80px}
+.welcome{background:#173b8f;color:#fff;border-radius:16px;padding:18px;margin-bottom:14px}
+.welcome h1{margin:0 0 5px;font-size:23px}
+.welcome p{margin:0;font-size:12px;opacity:.9}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+.card{background:#fff;border-radius:14px;padding:14px;box-shadow:0 2px 10px #0001}
+.card h2{font-size:16px;margin:0 0 8px}
+.service{cursor:pointer;text-align:center}
+.service b{display:block;color:#173b8f;margin-top:6px}
+.icon{font-size:28px}
+.stat{text-align:center}.stat b{display:block;font-size:20px;color:#173b8f}.stat span{font-size:10px;color:#667085}
+.request{background:#173b8f;color:#fff;width:100%;margin-top:10px}
+.job{border-top:1px solid #eee;padding:11px 0;font-size:12px}
+.badge{float:right;padding:5px 8px;border-radius:12px;font-size:9px;font-weight:bold;background:#eef3ff;color:#173b8f}
+.empty{text-align:center;color:#777;padding:18px;font-size:12px}
+.bottom{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #ddd;padding:8px;display:flex;justify-content:space-around}
+.bottom button{background:none;color:#173b8f}
+@media(min-width:650px){.grid{grid-template-columns:repeat(4,1fr)}}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="head">
+<div class="logo">🔧 MULE QUICKFIX</div>
+<button class="logout" id="logout">LOGOUT</button>
+</div>
+</header>
+
+<main>
+
+<div class="welcome">
+<h1>Hello, <span id="name">Customer</span> 👋</h1>
+<p>What service do you need today?</p>
+<button class="request" onclick="location.href='request-service.html'">
+🚀 REQUEST A SERVICE
+</button>
+</div>
+
+<div class="grid">
+
+<div class="card stat">
+<b id="total">0</b>
+<span>TOTAL REQUESTS</span>
+</div>
+
+<div class="card stat">
+<b id="active">0</b>
+<span>ACTIVE JOBS</span>
+</div>
+
+<div class="card stat">
+<b id="completed">0</b>
+<span>COMPLETED</span>
+</div>
+
+<div class="card stat">
+<b id="pending">0</b>
+<span>PENDING</span>
+</div>
+
+</div>
+
+<div class="card" style="margin-top:14px">
+<h2>🛠️ Popular Services</h2>
+
+<div class="grid">
+
+<div class="card service" onclick="request('Plumbing')">
+<div class="icon">🚰</div>
+<b>Plumbing</b>
+</div>
+
+<div class="card service" onclick="request('Electrical')">
+<div class="icon">⚡</div>
+<b>Electrical</b>
+</div>
+
+<div class="card service" onclick="request('Mechanics')">
+<div class="icon">🚗</div>
+<b>Mechanics</b>
+</div>
+
+<div class="card service" onclick="request('Phone Repair')">
+<div class="icon">📱</div>
+<b>Phone Repair</b>
+</div>
+
+<div class="card service" onclick="request('Computer Repair')">
+<div class="icon">💻</div>
+<b>Computer Repair</b>
+</div>
+
+<div class="card service" onclick="request('Locksmith')">
+<div class="icon">🔐</div>
+<b>Locksmith</b>
+</div>
+
+</div>
+</div>
+
+<div class="card" style="margin-top:14px">
+<h2>📋 My Recent Requests</h2>
+<div id="jobs">
+<div class="empty">Loading requests...</div>
+</div>
+</div>
+
+</main>
+
+<div class="bottom">
+<button onclick="location.href='dashboard.html'">🏠<br>Home</button>
+<button onclick="location.href='request-service.html'">➕<br>Request</button>
+<button onclick="location.href='profile.html'">👤<br>Profile</button>
+</div>
+
+<script type="module">
+
+import{auth,db}from"../js/firebase.js";
+
+import{
+onAuthStateChanged,
+signOut
+}from"https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+import{
+ref,
+get,
+onValue
+}from"https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+
+const $=id=>document.getElementById(id);
+
+function esc(x){
+return String(x??"").replace(/[&<>"']/g,m=>({
+"&":"&amp;",
+"<":"&lt;",
+">":"&gt;",
+'"':"&quot;",
+"'":"&#39;"
+}[m]));
+}
+
+window.request=service=>{
+localStorage.setItem("selectedService",service);
+location.href="request-service.html";
+};
+
+onAuthStateChanged(auth,async user=>{
+
+if(!user){
+location.href="../login.html";
+return;
+}
+
+let u=await get(ref(db,"users/"+user.uid));
+let data=u.val()||{};
+
+if(data.role!=="customer"){
+location.href="../login.html";
+return;
+}
+
+$("name").textContent=data.fullName||"Customer";
+
+onValue(ref(db,"jobs"),snap=>{
+
+let all=snap.val()||{};
+
+let list=Object.values(all)
+.filter(x=>x.customerId===user.uid)
+.sort((a,b)=>
+Number(b.createdAt||0)-Number(a.createdAt||0)
+);
+
+$("total").textContent=list.length;
+
+$("active").textContent=
+list.filter(x=>
+["accepted","in_progress"].includes(x.status)
+).length;
+
+$("completed").textContent=
+list.filter(x=>x.status==="completed").length;
+
+$("pending").textContent=
+list.filter(x=>x.status==="pending").length;
+
+let recent=list.slice(0,5);
+
+$("jobs").innerHTML=recent.length?
+
+recent.map(x=>`
+
+<div class="job">
+
+<span class="badge">
+${esc(x.status||"pending")}
+</span>
+
+<b>${esc(x.service||"Service")}</b>
+
+<div>
+📍 ${esc(x.location||"")}
+</div>
+
+<div>
+${esc(x.city||"")}
+</div>
+
+<div>
+Technician:
+${esc(x.technicianName||"Waiting for technician")}
+</div>
+
+<div>
+Estimated Price:
+<b>K${Number(x.finalPrice||x.estimatedPrice||0).toFixed(2)}</b>
+</div>
+
+</div>
+
+`).join("")
+
+:"<div class='empty'>You have not requested any service yet.</div>";
+
+});
+
+});
+
+$("logout").onclick=async()=>{
+await signOut(auth);
+location.href="../login.html";
+};
+
+</script>
+
+</body>
+  </html>
