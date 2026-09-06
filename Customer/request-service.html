@@ -2,74 +2,58 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#173b8f">
 <title>Request Service | Mule QuickFix</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#f4f7fc;color:#172033}
-header{background:#173b8f;color:#fff;padding:16px;position:sticky;top:0;z-index:5}
-.head{max-width:650px;margin:auto;display:flex;align-items:center;justify-content:space-between}
-.logo{font-weight:800;font-size:18px}.back{color:#fff;text-decoration:none;font-size:14px}
-main{max-width:650px;margin:auto;padding:18px 14px 40px}
-.card{background:#fff;border-radius:18px;padding:20px;box-shadow:0 5px 20px rgba(0,0,0,.07)}
-h1{margin:0 0 6px;font-size:24px}.sub{color:#687386;font-size:14px;margin-bottom:20px}
-label{display:block;font-size:13px;font-weight:700;margin:15px 0 7px}
-input,select,textarea{width:100%;padding:13px;border:1px solid #d8deea;border-radius:11px;font-size:15px;outline:none;background:#fff}
-textarea{min-height:110px;resize:vertical}
-input:focus,select:focus,textarea:focus{border-color:#173b8f}
-.pricebox{margin-top:18px;padding:14px;border-radius:13px;background:#eef4ff;border:1px solid #d8e4ff}
-.pricebox strong{display:block;color:#173b8f;font-size:18px;margin-bottom:4px}
-.note{font-size:12px;color:#667085;line-height:1.5}
-.lock{margin-top:15px;padding:12px;border-radius:10px;background:#fff8e7;color:#765500;font-size:12px;line-height:1.5}
-button{width:100%;border:0;border-radius:12px;padding:15px;margin-top:20px;background:#173b8f;color:#fff;font-size:16px;font-weight:800}
-button:disabled{opacity:.6}
-.msg{display:none;margin-top:14px;padding:12px;border-radius:10px;font-size:14px}
-.success{display:block;background:#e9f8ef;color:#176b39}
-.error{display:block;background:#fff0f0;color:#a52323}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f4f7fc;color:#172033}
+header{background:#173b8f;color:#fff;padding:15px;font-weight:800}
+main{max-width:600px;margin:auto;padding:18px 12px}
+.box{background:#fff;padding:18px;border-radius:16px;box-shadow:0 3px 15px #0001}
+h1{margin:0 0 5px;font-size:22px}.sub{color:#667085;font-size:12px;margin-bottom:18px}
+label{display:block;font-size:12px;font-weight:bold;margin:11px 0 5px}
+input,select,textarea{width:100%;padding:12px;border:1px solid #d7ddea;border-radius:9px;font-size:14px}
+textarea{min-height:90px;resize:vertical}
+button{width:100%;padding:13px;border:0;border-radius:10px;background:#173b8f;color:#fff;font-weight:bold;margin-top:15px}
+.price{background:#eef3ff;padding:11px;border-radius:9px;margin-top:12px;font-size:13px}
+.note{font-size:11px;color:#667085;margin-top:10px;line-height:1.5}
+#msg{display:none;padding:10px;border-radius:9px;margin-bottom:10px;font-size:12px}
+.ok{display:block;background:#e8f7ed;color:#176b39}.err{display:block;background:#ffeaea;color:#a00}
 </style>
 </head>
-
 <body>
 
-<header>
-<div class="head">
-<div class="logo">🔧 MULE QUICKFIX</div>
-<a class="back" href="dashboard.html">← Dashboard</a>
-</div>
-</header>
+<header>🔧 MULE QUICKFIX</header>
 
 <main>
-<div class="card">
-
+<div class="box">
 <h1>Request a Service</h1>
-<div class="sub">
-Tell us what you need and Mule QuickFix will connect you with an approved technician.
-</div>
+<div class="sub">Tell us what you need and we'll connect you with an approved technician.</div>
 
-<form id="requestForm">
+<div id="msg"></div>
 
-<label>Service Required</label>
+<form id="form">
+
+<label>Service</label>
 <select id="service" required>
-<option value="">Select a service</option>
-<option value="Plumbing">🔧 Plumbing</option>
-<option value="Electrical">⚡ Electrical</option>
-<option value="Mechanics">🚗 Mechanics</option>
-<option value="Phone Repair">📱 Phone Repair</option>
-<option value="Computer Repair">💻 Computer Repair</option>
-<option value="Locksmith">🔐 Locksmith</option>
-<option value="Other">🛠️ Other</option>
+<option value="">Select service</option>
+<option>Plumbing</option>
+<option>Electrical</option>
+<option>Mechanics</option>
+<option>Phone Repair</option>
+<option>Computer Repair</option>
+<option>Locksmith</option>
+<option>Other</option>
 </select>
 
-<label>Describe the Problem</label>
-<textarea id="description"
-placeholder="Explain clearly what problem you are experiencing..."
-required></textarea>
+<label>Description</label>
+<textarea id="description" placeholder="Describe the problem..." required></textarea>
 
-<label>Service Location</label>
-<input id="location" type="text"
-placeholder="Example: Bulangililo, near..."
-required>
+<label>Your Phone Number</label>
+<input id="phone" type="tel" placeholder="097xxxxxxx" required>
+
+<label>Location</label>
+<input id="location" placeholder="House, street or landmark" required>
 
 <label>City</label>
 <select id="city" required>
@@ -84,322 +68,126 @@ required>
 </select>
 
 <label>Your Budget (Optional)</label>
-<input id="budget" type="number" min="0" step="1"
-placeholder="Example: 200">
+<input id="budget" type="number" min="0" placeholder="e.g. 300">
 
 <label>Urgency</label>
-<select id="urgency" required>
+<select id="urgency">
 <option value="normal">Normal</option>
 <option value="urgent">Urgent</option>
 <option value="emergency">Emergency</option>
 </select>
 
-<div class="pricebox">
-<strong id="startingPrice">Starting price: K0</strong>
+<div class="price">
+Starting price: <b id="price">K0.00</b>
+</div>
+
 <div class="note">
-This is an estimated starting price only. The final price may be changed by Mule QuickFix CEO after assessment of the job.
-</div>
-</div>
-
-<div class="lock">
-🔒 <b>Your phone number is protected.</b><br>
-Your phone number will be available to Mule QuickFix management for coordinating your service. It will not be displayed to technicians.
+🔒 Your phone number is protected. It is stored separately and is only accessible to Mule QuickFix management.
 </div>
 
-<button id="submitBtn" type="submit">
-REQUEST SERVICE
-</button>
-
-<div id="msg" class="msg"></div>
-
+<button type="submit">🚀 SUBMIT REQUEST</button>
 </form>
 </div>
 </main>
 
 <script type="module">
+import{auth,db}from"../js/firebase.js";
+import{onAuthStateChanged}from"https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import{ref,get,push,set}from"https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
 
-import {auth,db} from "../js/firebase.js";
-
-import {
- onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-
-import {
- ref,
- push,
- set,
- get
-} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
-
-
-const prices={
- Plumbing:150,
- Electrical:150,
- Mechanics:200,
- "Phone Repair":100,
- "Computer Repair":150,
- Locksmith:150,
- Other:150
-};
-
-const service=document.getElementById("service");
-const budget=document.getElementById("budget");
-const startingPrice=document.getElementById("startingPrice");
-const form=document.getElementById("requestForm");
-const btn=document.getElementById("submitBtn");
-const msg=document.getElementById("msg");
-
-let currentUser=null;
+const prices={Plumbing:150,Electrical:150,Mechanics:200,"Phone Repair":100,"Computer Repair":150,Locksmith:150,Other:150};
+const $=id=>document.getElementById(id);
 let userData=null;
 
-
-function showMsg(type,text){
- msg.className="msg "+type;
- msg.textContent=text;
- msg.style.display="block";
+function show(t,e=false){
+ $("msg").textContent=t;
+ $("msg").className=e?"err":"ok";
 }
 
-
-function updatePrice(){
-
- const selected=service.value;
- const price=prices[selected]||0;
-
- startingPrice.textContent=
- selected
- ? "Starting price: K"+price.toFixed(2)
- : "Starting price: K0";
-}
-
-
-service.addEventListener("change",updatePrice);
-
+$("service").onchange=()=>{
+ let p=prices[$("service").value]||0;
+ $("price").textContent="K"+p.toFixed(2);
+};
 
 onAuthStateChanged(auth,async user=>{
-
- if(!user){
+ if(!user){location.href="../login.html";return}
+ let s=await get(ref(db,"users/"+user.uid));
+ userData=s.val()||{};
+ if(userData.role!=="customer"){
    location.href="../login.html";
    return;
  }
-
- currentUser=user;
-
- try{
-
-   const snap=await get(
-     ref(db,"users/"+user.uid)
-   );
-
-   if(!snap.exists()){
-     showMsg("error","Customer account information could not be found.");
-     return;
-   }
-
-   userData=snap.val();
-
-   if(!userData.phone){
-     showMsg(
-       "error",
-       "Your account does not have a phone number. Please update your profile before requesting a service."
-     );
-   }
-
- }catch(e){
-
-   console.error(e);
-
-   showMsg(
-     "error",
-     "Could not load your account information."
-   );
- }
-
+ $("phone").value=userData.phone||"";
+ $("city").value=userData.city||"";
 });
 
-
-form.addEventListener("submit",async e=>{
-
+$("form").onsubmit=async e=>{
  e.preventDefault();
 
- if(!currentUser||!userData){
-   showMsg("error","Please log in again.");
+ let user=auth.currentUser;
+ if(!user)return;
+
+ let service=$("service").value;
+ let description=$("description").value.trim();
+ let phone=$("phone").value.trim();
+ let locationText=$("location").value.trim();
+ let city=$("city").value;
+ let urgency=$("urgency").value;
+ let budget=Number($("budget").value||0);
+ let base=Number(prices[service]||150);
+ let commission=base*.15;
+
+ if(!service||!description||!phone||!locationText||!city){
+   show("Please complete all required fields.",true);
    return;
  }
-
- const customerPhone=
-   String(userData.phone||"").trim();
-
- if(!customerPhone){
-   showMsg(
-     "error",
-     "A valid phone number is required to request a service."
-   );
-   return;
- }
-
- const selectedService=service.value;
-
- const description=
-   document.getElementById("description")
-   .value.trim();
-
- const locationText=
-   document.getElementById("location")
-   .value.trim();
-
- const city=
-   document.getElementById("city").value;
-
- const urgency=
-   document.getElementById("urgency").value;
-
- const budgetValue=
-   Number(budget.value||0);
-
-
- if(!selectedService||
-    !description||
-    !locationText||
-    !city){
-
-   showMsg(
-     "error",
-     "Please complete all required fields."
-   );
-
-   return;
- }
-
-
- if(budgetValue<0){
-
-   showMsg(
-     "error",
-     "Please enter a valid budget."
-   );
-
-   return;
- }
-
-
- btn.disabled=true;
- btn.textContent="SUBMITTING...";
-
 
  try{
+   let jobRef=push(ref(db,"jobs"));
+   let id=jobRef.key;
 
-   const basePrice=
-     Number(prices[selectedService]||150);
-
-   const commissionRate=15;
-
-   const platformCommission=
-     basePrice*(commissionRate/100);
-
-   const technicianAmount=
-     basePrice-platformCommission;
-
-   const jobRef=
-     push(ref(db,"jobs"));
-
-
-   const jobData={
-
-     id:jobRef.key,
-
-     customerId:currentUser.uid,
-
-     customerName:
-       userData.fullName||
-       currentUser.displayName||
-       "Customer",
-
-     customerPhone:customerPhone,
-
-     service:selectedService,
-
-     description:description,
-
+   await set(jobRef,{
+     id,
+     customerId:user.uid,
+     customerName:userData.fullName||user.displayName||"Customer",
+     service,
+     description,
      location:locationText,
-
-     city:city,
-
-     urgency:urgency,
-
-     customerBudget:
-       budgetValue||0,
-
-     estimatedPrice:
-       Number(basePrice.toFixed(2)),
-
-     platformCommission:
-       Number(platformCommission.toFixed(2)),
-
-     technicianAmount:
-       Number(technicianAmount.toFixed(2)),
-
+     city,
+     urgency,
+     customerBudget:budget,
+     estimatedPrice:base,
+     platformCommission:commission,
+     technicianAmount:base-commission,
      commissionType:"percentage",
-
-     commissionRate:commissionRate,
-
+     commissionRate:15,
      status:"pending",
-
      technicianId:null,
-
      technicianName:null,
-
      paymentStatus:"unpaid",
-
      commissionStatus:"unpaid",
-
      commissionPaymentReference:null,
-
      commissionPaidAt:null,
-
      createdAt:Date.now(),
-
      updatedAt:Date.now()
+   });
 
-   };
+   await set(ref(db,"customerPhones/"+id),{
+     customerId:user.uid,
+     phone,
+     createdAt:Date.now()
+   });
 
+   show("✅ Request submitted successfully.");
 
-   await set(jobRef,jobData);
+   setTimeout(()=>location.href="dashboard.html",1200);
 
-
-   showMsg(
-     "success",
-     "Service request submitted successfully! Mule QuickFix will connect you with an approved technician."
-   );
-
-
-   form.reset();
-   updatePrice();
-
-
-   setTimeout(()=>{
-
-     location.href="dashboard.html";
-
-   },1800);
-
-
- }catch(error){
-
-   console.error(error);
-
-   showMsg(
-     "error",
-     "Could not submit your request. Please try again."
-   );
-
-   btn.disabled=false;
-   btn.textContent="REQUEST SERVICE";
-
+ }catch(err){
+   console.error(err);
+   show("Unable to submit request. Please try again.",true);
  }
-
-});
-
+};
 </script>
 
 </body>
- </html>
+</html>
