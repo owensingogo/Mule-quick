@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mule QuickFix | CEO Dashboard</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f4f7fb;color:#172033}
+header{background:#0b5cff;color:#fff;padding:16px;display:flex;justify-content:space-between;align-items:center}
+.logo{font-weight:800;font-size:18px}
+.admin{font-size:11px;background:#ffffff22;padding:6px 9px;border-radius:20px}
+main{max-width:900px;margin:auto;padding:15px}
+h2{margin:7px 0 10px;font-size:22px}
+.sub{color:#667085;font-size:13px;margin-bottom:15px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.card{background:#fff;border-radius:15px;padding:15px;box-shadow:0 4px 15px #0000000d;margin-bottom:13px}
+.stat b{display:block;font-size:24px;margin-top:6px}
+.stat span{font-size:12px;color:#667085}
+.blue{color:#0b5cff}.orange{color:#f59e0b}.green{color:#16a34a}.red{color:#dc2626}
+.section-title{display:flex;justify-content:space-between;margin-bottom:9px}
+.section-title h3{margin:0;font-size:16px}
+.item{border:1px solid #e7ebf0;border-radius:12px;padding:12px;margin:8px 0}
+.item strong{font-size:14px}
+.meta{font-size:12px;color:#667085;line-height:1.7;margin-top:5px}
+button{border:0;border-radius:8px;padding:9px 12px;font-weight:700;cursor:pointer;margin:4px 4px 0 0}
+.approve{background:#16a34a;color:#fff}
+.reject{background:#fee2e2;color:#b91c1c}
+.logout{background:#fff;color:#0b5cff;padding:8px 10px}
+.empty{text-align:center;color:#667085;padding:15px;font-size:13px}
+.badge{display:inline-block;padding:5px 8px;border-radius:20px;font-size:10px;font-weight:bold;background:#eef2ff;color:#3949ab}
+.job{border-left:4px solid #0b5cff}
+.error{background:#fee2e2;color:#991b1b;border-radius:12px;padding:14px;margin-bottom:14px;font-size:13px;display:none}
+@media(min-width:650px){.grid{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="logo">🔧 MULE QUICKFIX</div>
+<div>
+<span class="admin">CEO / ADMIN</span>
+<button class="logout" id="logout">Logout</button>
+</div>
+</header>
+
+<main>
+
+<div id="error" class="error"></div>
+
+<h2>CEO Dashboard 👋</h2>
+<div class="sub">Manage customers, technicians, jobs and platform revenue.</div>
+
+<div class="grid">
+<div class="card stat"><span>Customers</span><b class="blue" id="customers">0</b></div>
+<div class="card stat"><span>Technicians</span><b class="orange" id="technicians">0</b></div>
+<div class="card stat"><span>Pending Approval</span><b class="red" id="pendingTech">0</b></div>
+<div class="card stat"><span>Active Jobs</span><b class="blue" id="activeJobs">0</b></div>
+<div class="card stat"><span>Completed Jobs</span><b class="green" id="completedJobs">0</b></div>
+<div class="card stat"><span>Commission</span><b class="green" id="commission">K0.00</b></div>
+</div>
+
+<div class="card">
+<div class="section-title"><h3>👷 Technician Applications</h3></div>
+<div id="techniciansList"><div class="empty">Loading...</div></div>
+</div>
+
+<div class="card">
+<div class="section-title"><h3>🛠️ All Jobs</h3></div>
+<div id="jobsList"><div class="empty">Loading...</div></div>
+</div>
+
+<div class="card">
+<div class="section-title"><h3>👥 Customers</h3></div>
+<div id="customersList"><div class="empty">Loading...</div></div>
+</div>
+
+</main>
+
+<script type="module">
+
+import{auth,db}from"../js/firebase.js";
+import{onAuthStateChanged,signOut}from"https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import{ref,onValue,update}from"https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+
+const $=id=>document.getElementById(id);
+
+function showError(msg){
+ const e=$("error");
+ e.textContent="⚠️ "+msg;
+ e.style.display="block";
+}
+
+$("logout").onclick=()=>{
+ signOut(auth).then(()=>{
+  location.href="../login.html";
+ }).catch(e=>showError(e.message));
+};
+
+onAuthStateChanged(auth,user=>{
+
+ if(!user){
+  location.href="../login.html";
+  return;
+ }
+
+ onValue(ref(db,"users/"+user.uid),snap=>{
+
+  const u=snap.val();
+
+  if(!u){
+   showError("Your Firebase account has no user profile in the database.");
+   return;
+  }
+
+  if(u.role!=="admin"){
+   showError("Access denied. This account is not an admin account.");
+   return;
+  }
+
+  loadData();
+
+ },error=>{
+  showError("Could not read your user profile: "+error.message);
+ });
+
+});
+
+function loadData(){
+
+ onValue(ref(db,"users"),snap=>{
+
+  const users=snap.val()||{};
+  const arr=Object.entries(users);
+
+  const customers=arr.filter(x=>x[1].role==="customer");
+  const techs=arr.filter(x=>x[1].role==="technician");
+  const pending=techs.filter(x=>x[1].status==="pending");
+
+  $("customers").textContent=customers.length;
+  $("technicians").textContent=techs.length;
+  $("pendingTech").textContent=pending.length;
+
+  $("techniciansList").innerHTML=pending.length?
+
+  pending.map(([id,u])=>`
+
+  <div class="item">
+
+  <strong>${esc(u.fullName||"Unknown")}</strong>
+
+  <div class="meta">
+  📞 ${esc(u.phone||"—")}<br>
+  🔧 ${esc(u.service||"—")}<br>
+  📍 ${esc(u.city||"—")}<br>
+  ⭐ Experience: ${esc(u.experience||"0")} years
+  </div>
+
+  <button class="approve"
+  onclick="changeTech('${id}','approved')">
+  Approve
+  </button>
+
+  <button class="reject"
+  onclick="changeTech('${id}','rejected')">
+  Reject
+  </button>
+
+  </div>
+
+  `).join("")
+
+  :
+
+  `<div class="empty">No pending technician applications.</div>`;
+
+  $("customersList").innerHTML=customers.length?
+
+  customers.slice(0,20).map(([id,u])=>`
+
+  <div class="item">
+
+  <strong>${esc(u.fullName||"Customer")}</strong>
+
+  <div class="meta">
+  📞 ${esc(u.phone||"—")} ·
+  📍 ${esc(u.city||"—")}
+  </div>
+
+  <span class="badge">
+  ${esc(u.status||"active")}
+  </span>
+
+  </div>
+
+  `).join("")
+
+  :
+
+  `<div class="empty">No customers yet.</div>`;
+
+ },error=>{
+  showError("Could not load users: "+error.message);
+ });
+
+
+ onValue(ref(db,"jobs"),snap=>{
+
+  const jobs=snap.val()||{};
+  const arr=Object.entries(jobs);
+
+  $("activeJobs").textContent=
+  arr.filter(x=>["accepted","in_progress"].includes(x[1].status)).length;
+
+  $("completedJobs").textContent=
+  arr.filter(x=>x[1].status==="completed").length;
+
+  let total=0;
+
+  arr.forEach(([id,j])=>{
+   total+=Number(j.platformCommission||0);
+  });
+
+  $("commission").textContent="K"+total.toFixed(2);
+
+  arr.reverse();
+
+  $("jobsList").innerHTML=arr.length?
+
+  arr.slice(0,30).map(([id,j])=>`
+
+  <div class="item job">
+
+  <strong>${esc(j.service||"Service Request")}</strong>
+
+  <div class="meta">
+
+  👤 Customer:
+  ${esc(j.customerName||"—")}<br>
+
+  👷 Technician:
+  ${esc(j.technicianName||"Not assigned")}<br>
+
+  📍 ${esc(j.location||"—")},
+  ${esc(j.city||"—")}<br>
+
+  💰 Price:
+  K${Number(j.estimatedPrice||0).toFixed(2)}<br>
+
+  💼 Commission:
+  K${Number(j.platformCommission||0).toFixed(2)}
+
+  </div>
+
+  <span class="badge">
+  ${esc(j.status||"pending")}
+  </span>
+
+  </div>
+
+  `).join("")
+
+  :
+
+  `<div class="empty">No jobs yet.</div>`;
+
+ },error=>{
+  showError("Could not load jobs: "+error.message);
+ });
+
+}
+
+window.changeTech=async(id,status)=>{
+
+ try{
+
+  await update(
+   ref(db,"users/"+id),
+   {
+    status:status,
+    updatedAt:Date.now()
+   }
+  );
+
+  alert(
+   status==="approved"
+   ?"Technician approved successfully."
+   :"Application rejected."
+  );
+
+ }catch(e){
+
+  showError(e.message);
+
+ }
+
+};
+
+function esc(v){
+
+ return String(v??"").replace(
+  /[&<>"']/g,
+  m=>({
+   "&":"&amp;",
+   "<":"&lt;",
+   ">":"&gt;",
+   '"':"&quot;",
+   "'":"&#039;"
+  }[m])
+ );
+
+}
+
+</script>
+
+</body>
+  </html>
