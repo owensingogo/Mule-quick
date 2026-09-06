@@ -3,102 +3,91 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>My Jobs | Mule QuickFix</title>
-
+<title>Mule QuickFix | My Jobs</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#f5f7fb;color:#172033}
-header{background:#0b5cff;color:#fff;padding:16px}
-.head{max-width:700px;margin:auto;display:flex;justify-content:space-between;align-items:center}
-.logo{font-weight:900;font-size:18px}
-.logout{border:0;background:#ffffff20;color:#fff;padding:9px 12px;border-radius:10px;font-weight:bold}
-main{max-width:700px;margin:auto;padding:20px 15px 100px}
-h1{font-size:25px;margin:0 0 5px}
-.sub{color:#687386;font-size:14px}
-.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:20px 0 15px}
-.tab{border:0;padding:11px 5px;border-radius:11px;background:#fff;color:#687386;font-weight:bold}
-.tab.active{background:#0b5cff;color:#fff}
-.job{background:#fff;border-radius:18px;padding:17px;margin:11px 0;box-shadow:0 4px 15px #1720330b}
-.top{display:flex;justify-content:space-between;gap:8px}
-.service{font-weight:900;font-size:16px}
-.badge{font-size:10px;padding:6px 8px;border-radius:8px;background:#eef4ff;color:#0b5cff;font-weight:bold}
-.info{font-size:13px;color:#687386;line-height:1.7;margin-top:9px}
-.desc{font-size:13px;line-height:1.5;margin:8px 0}
-.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
-.btn{border:0;padding:12px;border-radius:11px;font-weight:bold;cursor:pointer}
-.primary{background:#0b5cff;color:#fff}
-.green{background:#16a34a;color:#fff}
-.gray{background:#e9edf3;color:#344054}
-.empty{text-align:center;background:#fff;padding:35px 18px;border-radius:18px;color:#687386;line-height:1.5}
-.loading{text-align:center;color:#687386;padding:30px}
-nav{position:fixed;bottom:0;left:0;right:0;height:68px;background:#fff;border-top:1px solid #e5e7eb;display:flex;justify-content:center}
-.nav{max-width:700px;width:100%;display:grid;grid-template-columns:repeat(3,1fr)}
-.nav button{border:0;background:#fff;color:#687386;font-weight:bold;font-size:11px}
-.nav button:nth-child(2){color:#0b5cff}
-.nav span{display:block;font-size:21px;margin-bottom:3px}
+*{box-sizing:border-box}body{margin:0;background:#f4f7fb;color:#172033;font-family:Arial,sans-serif}
+header{background:#0b5cff;color:#fff;padding:14px;display:flex;justify-content:space-between;align-items:center}
+.logo{font-weight:900}.back{background:#fff;color:#0b5cff;border:0;padding:7px;border-radius:7px;font-weight:bold}
+main{max-width:700px;margin:auto;padding:14px}h2{margin:3px 0}.sub{font-size:12px;color:#667085;margin-bottom:14px}
+.card{background:#fff;border-radius:14px;padding:13px;margin-bottom:12px;box-shadow:0 3px 12px #0001}
+.tabs{display:flex;gap:6px;overflow:auto;margin-bottom:10px}.tab{border:0;padding:8px 10px;border-radius:8px;background:#eef2f7;white-space:nowrap;font-weight:bold}.tab.active{background:#0b5cff;color:#fff}
+.item{border:1px solid #e5e9ef;border-radius:10px;padding:11px;margin:8px 0}
+.item strong{font-size:14px}.meta{font-size:11px;color:#667085;line-height:1.7;margin-top:5px}
+.money{background:#f8fafc;border-radius:9px;padding:10px;margin-top:8px;font-size:12px;line-height:1.9}
+.earn{color:#16a34a;font-size:15px}.commission{color:#dc2626}
+button.action{border:0;border-radius:8px;padding:9px 12px;margin-top:8px;background:#0b5cff;color:#fff;font-weight:bold}
+.complete{background:#16a34a!important}.empty{text-align:center;color:#667085;font-size:12px;padding:15px}
+.error{display:none;background:#fee2e2;color:#991b1b;padding:10px;border-radius:8px;font-size:12px;margin-bottom:10px}
 </style>
 </head>
 
 <body>
 
 <header>
-<div class="head">
 <div class="logo">🔧 MULE QUICKFIX</div>
-<button class="logout" id="logout">Logout</button>
-</div>
+<button class="back" onclick="location.href='dashboard.html'">Dashboard</button>
 </header>
 
 <main>
 
-<h1>My Jobs</h1>
-<p class="sub">Manage your accepted and completed jobs.</p>
+<div id="error" class="error"></div>
+
+<h2>My Jobs 👷</h2>
+<div class="sub">Manage your assigned jobs and track your earnings.</div>
+
+<div class="card">
 
 <div class="tabs">
-<button class="tab active" data-filter="accepted">Active</button>
-<button class="tab" data-filter="in_progress">Progress</button>
-<button class="tab" data-filter="completed">Completed</button>
+<button class="tab active" data-tab="active">Active</button>
+<button class="tab" data-tab="progress">In Progress</button>
+<button class="tab" data-tab="completed">Completed</button>
 </div>
 
-<div id="list">
-<div class="loading">Loading your jobs...</div>
+<div id="list">Loading jobs...</div>
+
 </div>
 
 </main>
 
-<nav>
-<div class="nav">
-<button onclick="location.href='dashboard.html'">
-<span>🏠</span>Home
-</button>
-<button onclick="location.href='jobs.html'">
-<span>🛠️</span>My Jobs
-</button>
-<button onclick="alert('Profile coming next')">
-<span>👤</span>Profile
-</button>
-</div>
-</nav>
-
 <script type="module">
 
 import{auth,db}from"../js/firebase.js";
-import{onAuthStateChanged,signOut}from"https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-import{ref,get,onValue,update,query,orderByChild,equalTo}from"https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+import{onAuthStateChanged}from"https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import{ref,onValue,update}from"https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
 
-let user;
-let currentFilter="accepted";
-const $=x=>document.getElementById(x);
+const $=id=>document.getElementById(id);
+let jobs={},uid="",tab="active";
 
-onAuthStateChanged(auth,async u=>{
+function esc(v){
+return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+}
 
-if(!u){location.href="../login.html";return}
+function error(t){
+$("error").textContent=t;
+$("error").style.display="block";
+setTimeout(()=>$("error").style.display="none",4000);
+}
 
-user=u;
+onAuthStateChanged(auth,u=>{
 
-const s=await get(ref(db,"users/"+u.uid));
-
-if(!s.exists()||s.val().role!=="technician"){
+if(!u){
 location.href="../login.html";
+return;
+}
+
+uid=u.uid;
+
+onValue(ref(db,"users/"+uid),s=>{
+
+let user=s.val();
+
+if(!user||user.role!=="technician"){
+error("This account is not registered as a technician.");
+return;
+}
+
+if(user.status!=="approved"){
+error("Your technician account is not approved yet.");
 return;
 }
 
@@ -106,128 +95,89 @@ loadJobs();
 
 });
 
-document.querySelectorAll(".tab").forEach(btn=>{
-btn.onclick=()=>{
-document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
-btn.classList.add("active");
-currentFilter=btn.dataset.filter;
-loadJobs();
-};
 });
 
 function loadJobs(){
 
-const q=query(
-ref(db,"jobs"),
-orderByChild("technicianId"),
-equalTo(user.uid)
+onValue(ref(db,"jobs"),s=>{
+jobs=s.val()||{};
+render();
+},e=>error("Could not load jobs: "+e.message));
+
+}
+
+function render(){
+
+let list=Object.entries(jobs).filter(([id,j])=>
+j.technicianId===uid
 );
 
-onValue(q,s=>{
+if(tab==="active")
+list=list.filter(x=>x[1].status==="accepted");
 
-$("list").innerHTML="";
+if(tab==="progress")
+list=list.filter(x=>x[1].status==="in_progress");
 
-let found=false;
+if(tab==="completed")
+list=list.filter(x=>x[1].status==="completed");
 
-if(s.exists()){
+list.sort((a,b)=>
+Number(b[1].updatedAt||0)-Number(a[1].updatedAt||0)
+);
 
-s.forEach(x=>{
-
-const j=x.val();
-
-if(j.status===currentFilter){
-
-found=true;
-render(j);
-
+if(!list.length){
+$("list").innerHTML='<div class="empty">No jobs in this section.</div>';
+return;
 }
 
-});
+$("list").innerHTML=list.map(([id,j])=>{
 
-}
+let price=Number(j.estimatedPrice||0);
+let commission=Number(j.platformCommission||0);
+let earnings=Number(j.technicianAmount||0);
 
-if(!found){
+return`
 
-$("list").innerHTML=`
-<div class="empty">
-<div style="font-size:40px">🛠️</div>
-<br>
-<strong>No ${currentFilter.replace("_"," ")} jobs</strong>
-<br>
-Your jobs will appear here when their status changes.
-</div>`;
+<div class="item">
 
-}
+<strong>🔧 ${esc(j.service||"Service")}</strong>
 
-});
-
-}
-
-function render(j){
-
-const d=document.createElement("div");
-d.className="job";
-
-let next="";
-
-if(j.status==="accepted"){
-
-next=`
-<button class="btn primary"
-onclick="startJob('${j.id}')">
-Start Job
-</button>`;
-
-}
-
-if(j.status==="in_progress"){
-
-next=`
-<button class="btn green"
-onclick="completeJob('${j.id}')">
-Mark Completed
-</button>`;
-
-}
-
-d.innerHTML=`
-
-<div class="top">
-
-<div class="service">
-${safe(j.service||"Service")}
+<div class="meta">
+👤 Customer: ${esc(j.customerName||"—")}<br>
+📞 ${esc(j.customerPhone||"—")}<br>
+📍 ${esc(j.location||"—")}, ${esc(j.city||"—")}<br>
+🚨 ${esc(j.urgency||"normal")}
 </div>
 
-<div class="badge">
-${safe(j.status.replace("_"," ").toUpperCase())}
+<div class="money">
+💵 Job Price: <b>K${price.toFixed(2)}</b><br>
+<span class="commission">Mule QuickFix: K${commission.toFixed(2)}</span><br>
+<span class="earn">👷 Your Earnings: <b>K${earnings.toFixed(2)}</b></span>
 </div>
+
+<div class="meta">
+📝 ${esc(j.description||"No description")}
+</div>
+
+${j.status==="accepted"?`
+<button class="action" onclick="startJob('${id}')">
+▶️ Start Job
+</button>`:""}
+
+${j.status==="in_progress"?`
+<button class="action complete" onclick="completeJob('${id}')">
+✓ Complete Job
+</button>`:""}
+
+<span style="display:block;margin-top:7px;font-size:10px;color:#667085">
+Status: ${esc(j.status||"—")}
+</span>
 
 </div>
 
-<div class="desc">
-${safe(j.description||"No description")}
-</div>
-
-<div class="info">
-👤 ${safe(j.customerName||"Customer")}<br>
-📞 ${safe(j.customerPhone||"Not provided")}<br>
-📍 ${safe(j.location||"")}<br>
-🏙️ ${safe(j.city||"")}
-</div>
-
-<div class="actions">
-
-${next}
-
-<button class="btn gray"
-onclick="viewJob('${j.id}')">
-View Details
-</button>
-
-</div>
 `;
 
-$("list").appendChild(d);
+}).join("");
 
 }
 
@@ -235,14 +185,17 @@ window.startJob=async id=>{
 
 if(!confirm("Start this job now?"))return;
 
-await update(
-ref(db,"jobs/"+id),
-{
+try{
+
+await update(ref(db,"jobs/"+id),{
 status:"in_progress",
 startedAt:Date.now(),
 updatedAt:Date.now()
+});
+
+}catch(e){
+error(e.message);
 }
-);
 
 };
 
@@ -250,53 +203,32 @@ window.completeJob=async id=>{
 
 if(!confirm("Mark this job as completed?"))return;
 
-await update(
-ref(db,"jobs/"+id),
-{
+try{
+
+await update(ref(db,"jobs/"+id),{
 status:"completed",
 completedAt:Date.now(),
 updatedAt:Date.now()
-}
-);
+});
 
-};
-
-window.viewJob=async id=>{
-
-const s=await get(ref(db,"jobs/"+id));
-
-if(!s.exists())return;
-
-const j=s.val();
-
-alert(
-"Service: "+j.service+
-"\n\nProblem: "+j.description+
-"\n\nCustomer: "+j.customerName+
-"\nPhone: "+j.customerPhone+
-"\nLocation: "+j.location+
-", "+j.city+
-"\n\nStatus: "+j.status
-);
-
-};
-
-function safe(v){
-
-return String(v)
-.replace(/&/g,"&amp;")
-.replace(/</g,"&lt;")
-.replace(/>/g,"&gt;")
-.replace(/"/g,"&quot;");
-
+}catch(e){
+error(e.message);
 }
 
-$("logout").onclick=async()=>{
-await signOut(auth);
-location.href="../login.html";
 };
+
+document.querySelectorAll("[data-tab]").forEach(b=>{
+
+b.onclick=()=>{
+document.querySelectorAll("[data-tab]").forEach(x=>x.classList.remove("active"));
+b.classList.add("active");
+tab=b.dataset.tab;
+render();
+};
+
+});
 
 </script>
 
 </body>
-</html>
+  </html>
