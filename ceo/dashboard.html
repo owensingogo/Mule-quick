@@ -3,443 +3,225 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Mule QuickFix | CEO</title>
+<meta name="theme-color" content="#173b8f">
+<title>CEO Dashboard | Mule QuickFix</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#f4f7fb;color:#172033;font-family:Arial,sans-serif}
-header{background:#0b5cff;color:#fff;padding:14px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:5}
-.logo{font-weight:900}.admin{font-size:10px;background:#ffffff22;padding:6px;border-radius:15px}
-button{border:0;border-radius:7px;padding:8px 10px;font-weight:bold;cursor:pointer}.logout{color:#0b5cff}
-main{max-width:950px;margin:auto;padding:14px}h2{margin:3px 0;font-size:21px}.sub{font-size:12px;color:#667085;margin-bottom:14px}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.card{background:#fff;border-radius:14px;padding:13px;margin-bottom:12px;box-shadow:0 3px 12px #0001}
-.stat span{font-size:11px;color:#667085}.stat b{display:block;font-size:21px;margin-top:5px}
-.blue{color:#0b5cff}.green{color:#16a34a}.orange{color:#f59e0b}.red{color:#dc2626}
-h3{font-size:15px;margin:0 0 10px}input,select{width:100%;padding:10px;border:1px solid #d8dee8;border-radius:8px;margin:4px 0;font-size:13px}
-.save,.approve{background:#16a34a;color:#fff}.reject{background:#fee2e2;color:#b91c1c}.suspend{background:#fff3cd;color:#8a5a00}.activate{background:#dbeafe;color:#175cd3}
-.price{background:#eff6ff;color:#175cd3}.item{border:1px solid #e5e9ef;border-radius:10px;padding:10px;margin:7px 0}
-.item strong{font-size:13px}.meta{font-size:11px;color:#667085;line-height:1.7;margin-top:4px}
-.badge{display:inline-block;background:#eef2ff;color:#3949ab;padding:4px 7px;border-radius:15px;font-size:9px;font-weight:bold;margin-top:5px}
-.money{background:#f8fafc;border-radius:9px;padding:9px;margin-top:7px;font-size:12px;line-height:1.8}
-.tabs{display:flex;gap:5px;overflow:auto;margin-bottom:8px}.tab{background:#eef2f7;color:#475467;white-space:nowrap}.tab.active{background:#0b5cff;color:#fff}
-.empty,.loading{text-align:center;color:#667085;font-size:12px;padding:13px}
-.error,.success{display:none;padding:10px;border-radius:9px;font-size:12px;margin-bottom:10px}.error{background:#fee2e2;color:#991b1b}.success{background:#dcfce7;color:#166534}
-@media(min-width:650px){.grid{grid-template-columns:repeat(4,1fr)}}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f4f7fc;color:#172033}
+header{background:#173b8f;color:#fff;padding:14px;position:sticky;top:0;z-index:5}
+.head{max-width:900px;margin:auto;display:flex;justify-content:space-between;align-items:center}
+.logo{font-weight:800}.logout{background:#fff;color:#173b8f;border:0;border-radius:8px;padding:9px;font-weight:bold}
+main{max-width:900px;margin:auto;padding:14px 11px 40px}h1{margin:4px 0;font-size:23px}.sub{font-size:12px;color:#667085;margin-bottom:14px}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.stat{background:#fff;padding:12px;border-radius:13px;box-shadow:0 2px 10px #0001}.stat b{display:block;color:#173b8f;font-size:18px}.stat span{font-size:9px;color:#667085}
+.section{background:#fff;border-radius:15px;padding:13px;margin-top:14px;box-shadow:0 2px 10px #0001}.section h2{font-size:16px;margin:0 0 10px}
+input,select{width:100%;padding:10px;border:1px solid #d8deea;border-radius:9px;margin-bottom:7px;background:#fff}
+button{border:0;border-radius:8px;padding:9px;font-weight:bold}.blue{background:#173b8f;color:#fff}.green{background:#198754;color:#fff}.red{background:#b42318;color:#fff}.orange{background:#c47a00;color:#fff}
+.card{border:1px solid #e1e6ef;border-radius:11px;padding:11px;margin-top:8px;font-size:12px}.title{font-weight:bold;color:#173b8f}.phone{background:#e9f8ef;padding:8px;border-radius:8px;margin-top:7px;font-weight:bold}.money{background:#f5f8ff;padding:8px;border-radius:8px;margin-top:7px;line-height:1.6}.actions{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}.badge{float:right;padding:4px 7px;border-radius:12px;font-size:9px;font-weight:bold}.pending{background:#fff2d7}.approved{background:#e7f7ed}.suspended,.rejected{background:#ffe5e5}.empty{text-align:center;padding:15px;color:#777;font-size:12px}
+.msg{display:none;padding:9px;border-radius:8px;margin-bottom:9px;font-size:12px}.ok{display:block;background:#e9f8ef;color:#176b39}.err{display:block;background:#ffecec;color:#a00}
+@media(min-width:650px){.stats{grid-template-columns:repeat(4,1fr)}}
 </style>
 </head>
-
 <body>
 
-<header>
-<div class="logo">🔧 MULE QUICKFIX</div>
-<div><span class="admin">CEO</span> <button class="logout" id="logout">Logout</button></div>
-</header>
+<header><div class="head"><div class="logo">🔧 MULE QUICKFIX CEO</div><button class="logout" id="logout">LOGOUT</button></div></header>
 
 <main>
+<h1>CEO Dashboard</h1>
+<div class="sub">Manage customers, technicians, jobs and commissions.</div>
+<div id="msg" class="msg"></div>
 
-<div id="error" class="error"></div>
-<div id="success" class="success"></div>
-
-<h2>CEO Dashboard 👋</h2>
-<div class="sub">Manage technicians, customers, jobs and revenue.</div>
-
-<div class="grid">
-<div class="card stat"><span>Customers</span><b class="blue" id="customers">0</b></div>
-<div class="card stat"><span>Technicians</span><b class="orange" id="technicians">0</b></div>
-<div class="card stat"><span>Pending Tech</span><b class="red" id="pending">0</b></div>
-<div class="card stat"><span>Active Jobs</span><b class="blue" id="active">0</b></div>
-<div class="card stat"><span>Completed</span><b class="green" id="completed">0</b></div>
-<div class="card stat"><span>Total Jobs</span><b id="totalJobs">0</b></div>
-<div class="card stat"><span>Job Value</span><b class="orange" id="jobValue">K0</b></div>
-<div class="card stat"><span>QuickFix Revenue</span><b class="green" id="revenue">K0</b></div>
+<div class="stats">
+<div class="stat"><b id="customers">0</b><span>CUSTOMERS</span></div>
+<div class="stat"><b id="techs">0</b><span>TECHNICIANS</span></div>
+<div class="stat"><b id="pendingTech">0</b><span>PENDING TECHNICIANS</span></div>
+<div class="stat"><b id="active">0</b><span>ACTIVE JOBS</span></div>
+<div class="stat"><b id="done">0</b><span>COMPLETED JOBS</span></div>
+<div class="stat"><b id="jobs">0</b><span>TOTAL JOBS</span></div>
+<div class="stat"><b id="value">K0</b><span>JOB VALUE</span></div>
+<div class="stat"><b id="revenue">K0</b><span>QUICKFIX REVENUE</span></div>
 </div>
 
-<div class="card">
-<h3>💰 Commission Settings</h3>
-<select id="comType">
-<option value="percentage">Percentage (%)</option>
-<option value="fixed">Fixed Amount (K)</option>
-</select>
-<input id="comValue" type="number" min="0" placeholder="Example: 15">
-<button class="save" id="saveCom">💾 Save Commission</button>
-<div class="money" id="currentCom">Loading...</div>
+<div class="section">
+<h2>💰 Commission Settings</h2>
+<select id="ctype"><option value="percentage">Percentage</option><option value="fixed">Fixed Amount</option></select>
+<input id="crate" type="number" min="0" step=".01" placeholder="Commission">
+<button class="blue" onclick="saveSettings()">SAVE</button>
 </div>
 
-<div class="card">
-<h3>👷 Technicians</h3>
-<input id="techSearch" placeholder="Search technician...">
-<div class="tabs">
-<button class="tab active" data-filter="pending">Pending</button>
-<button class="tab" data-filter="approved">Approved</button>
-<button class="tab" data-filter="suspended">Suspended</button>
-<button class="tab" data-filter="all">All</button>
-</div>
-<div id="techList"><div class="loading">Loading...</div></div>
+<div class="section">
+<h2>💳 Commission Payments</h2>
+<div id="payments"><div class="empty">Loading...</div></div>
 </div>
 
-<div class="card">
-<h3>🛠️ Jobs & Pricing</h3>
-<input id="jobSearch" placeholder="Search jobs...">
-<div class="tabs">
-<button class="tab active" data-job="all">All</button>
-<button class="tab" data-job="pending">Pending</button>
-<button class="tab" data-job="accepted">Accepted</button>
-<button class="tab" data-job="in_progress">Progress</button>
-<button class="tab" data-job="completed">Completed</button>
-</div>
-<div id="jobList"><div class="loading">Loading...</div></div>
+<div class="section">
+<h2>👨‍🔧 Technicians</h2>
+<input id="ts" placeholder="Search technician...">
+<select id="tf"><option value="all">All</option><option value="pending">Pending</option><option value="approved">Approved</option><option value="suspended">Suspended</option><option value="rejected">Rejected</option></select>
+<div id="techList"></div>
 </div>
 
-<div class="card">
-<h3>👥 Customers</h3>
-<input id="customerSearch" placeholder="Search customers...">
-<div id="customerList"><div class="loading">Loading...</div></div>
+<div class="section">
+<h2>📋 Jobs</h2>
+<input id="js" placeholder="Search job/customer...">
+<select id="jf"><option value="all">All Jobs</option><option value="pending">Pending</option><option value="accepted">Accepted</option><option value="in_progress">In Progress</option><option value="completed">Completed</option></select>
+<div id="jobList"></div>
+</div>
+
+<div class="section">
+<h2>👥 Customers</h2>
+<input id="cs" placeholder="Search customer or phone...">
+<div id="customerList"></div>
 </div>
 
 </main>
 
 <script type="module">
-
 import{auth,db}from"../js/firebase.js";
 import{onAuthStateChanged,signOut}from"https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-import{ref,onValue,update,set}from"https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+import{ref,get,set,update,onValue}from"https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+
+const CEO="ErJbrmeB4ARtVr5n9G7FxYEZxVa2";
+let users={},jobs={},settings={commissionType:"percentage",commissionRate:15};
 
 const $=id=>document.getElementById(id);
-let users={},jobs={},techFilter="pending",jobFilter="all";
-let commission={type:"percentage",value:15};
+const money=n=>"K"+Number(n||0).toFixed(2);
+function msg(t,e=false){$("msg").textContent=t;$("msg").className="msg "+(e?"err":"ok");setTimeout(()=>$("msg").style.display="none",3000)}
+function esc(x){return String(x??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
 
-function msg(id,text){
-$(id).textContent=text;$(id).style.display="block";
-setTimeout(()=>$(id).style.display="none",3500);
+onAuthStateChanged(auth,async u=>{
+ if(!u||u.uid!==CEO){location.href="../login.html";return}
+ await load();
+});
+
+async function load(){
+ let u=await get(ref(db,"users"));users=u.val()||{};
+ let j=await get(ref(db,"jobs"));jobs=j.val()||{};
+ let s=await get(ref(db,"settings"));if(s.exists())settings=s.val();
+ $("ctype").value=settings.commissionType||"percentage";
+ $("crate").value=settings.commissionRate??15;
+ render();
+ onValue(ref(db,"jobs"),x=>{jobs=x.val()||{};render()});
+ onValue(ref(db,"users"),x=>{users=x.val()||{};render()});
 }
 
-function esc(v){
-return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+function commission(price){
+ return settings.commissionType==="fixed"
+ ?Number(settings.commissionRate||0)
+ :Number(price||0)*Number(settings.commissionRate||0)/100;
 }
 
-$("logout").onclick=async()=>{
-await signOut(auth);location.href="../login.html";
+window.saveSettings=async()=>{
+ settings.commissionType=$("ctype").value;
+ settings.commissionRate=Number($("crate").value||0);
+ await set(ref(db,"settings"),settings);
+ msg("Commission settings saved.");
+ render();
 };
 
-onAuthStateChanged(auth,u=>{
-if(!u){location.href="../login.html";return}
-onValue(ref(db,"users/"+u.uid),s=>{
-let x=s.val();
-if(!x||x.role!=="admin"){
-msg("error","Access denied.");return;
-}
-load();loadCommission();
-},e=>msg("error",e.message));
-});
+function render(){
+ let us=Object.values(users),js=Object.values(jobs);
+ let cu=us.filter(x=>x.role==="customer"),te=us.filter(x=>x.role==="technician");
+ let active=js.filter(x=>["pending","accepted","in_progress"].includes(x.status));
+ let done=js.filter(x=>x.status==="completed");
+ let value=js.reduce((a,x)=>a+Number(x.finalPrice||x.estimatedPrice||0),0);
+ let rev=js.filter(x=>x.commissionStatus==="paid").reduce((a,x)=>a+Number(x.platformCommission||0),0);
 
-function load(){
+ $("customers").textContent=cu.length;$("techs").textContent=te.length;
+ $("pendingTech").textContent=te.filter(x=>x.status==="pending").length;
+ $("active").textContent=active.length;$("done").textContent=done.length;
+ $("jobs").textContent=js.length;$("value").textContent=money(value);$("revenue").textContent=money(rev);
 
-onValue(ref(db,"users"),s=>{
-users=s.val()||{};renderUsers();
-},e=>msg("error","Could not load users: "+e.message));
-
-onValue(ref(db,"jobs"),s=>{
-jobs=s.val()||{};renderJobs();
-},e=>msg("error","Could not load jobs: "+e.message));
-
+ renderTech(te);renderJobs(js);renderCustomers(cu);renderPayments(js);
 }
 
-function loadCommission(){
-
-onValue(ref(db,"settings/commission"),s=>{
-let x=s.val();
-if(x)commission={type:x.type||"percentage",value:Number(x.value||0)};
-$("comType").value=commission.type;
-$("comValue").value=commission.value;
-$("currentCom").innerHTML=commission.type==="percentage"
-?"Current: <b>"+commission.value+"%</b>"
-:"Current: <b>K"+commission.value.toFixed(2)+"</b>";
-});
-
+function renderTech(list){
+ let q=$("ts").value.toLowerCase(),f=$("tf").value;
+ list=list.filter(x=>(f==="all"||x.status===f)&&((x.fullName||"")+" "+(x.phone||"")).toLowerCase().includes(q));
+ $("techList").innerHTML=list.length?list.map(x=>`
+ <div class="card">
+ <span class="badge ${esc(x.status)}">${esc(x.status||"pending")}</span>
+ <div class="title">${esc(x.fullName||"Technician")}</div>
+ <div>${esc(x.service||"")} • ${esc(x.city||"")}</div>
+ <div>📞 ${esc(x.phone||"")} • ${esc(x.experience||"")} experience</div>
+ <div class="actions">
+ ${x.status==="pending"?`<button class="green" onclick="tech('${x.uid}','approved')">APPROVE</button><button class="red" onclick="tech('${x.uid}','rejected')">REJECT</button>`:""}
+ ${x.status==="approved"?`<button class="orange" onclick="tech('${x.uid}','suspended')">SUSPEND</button>`:""}
+ ${x.status==="suspended"?`<button class="green" onclick="tech('${x.uid}','approved')">REACTIVATE</button>`:""}
+ </div></div>`).join(""):"<div class='empty'>No technicians found.</div>";
 }
 
-$("saveCom").onclick=async()=>{
-
-let type=$("comType").value,value=Number($("comValue").value);
-
-if(!Number.isFinite(value)||value<0||(type==="percentage"&&value>100)){
-msg("error","Enter a valid commission.");return;
-}
-
-try{
-await set(ref(db,"settings/commission"),{
-type,value,updatedAt:Date.now(),updatedBy:auth.currentUser.uid
-});
-commission={type,value};
-msg("success","Commission saved.");
-}catch(e){msg("error",e.message)}
-
+window.tech=async(uid,status)=>{
+ await update(ref(db,"users/"+uid),{status});
+ msg("Technician status updated.");
 };
 
-function calc(price){
-
-price=Number(price)||0;
-
-let c=commission.type==="percentage"
-?price*commission.value/100
-:Math.min(price,commission.value);
-
-return{price,commission:c,technician:price-c};
-
+function renderJobs(list){
+ let q=$("js").value.toLowerCase(),f=$("jf").value;
+ list=list.filter(x=>(f==="all"||x.status===f)&&JSON.stringify(x).toLowerCase().includes(q));
+ $("jobList").innerHTML=list.length?list.map(x=>{
+ let p=Number(x.finalPrice||x.estimatedPrice||0),c=Number(x.platformCommission??commission(p)),earn=p-c;
+ return `<div class="card">
+ <span class="badge">${esc(x.status||"pending")}</span>
+ <div class="title">${esc(x.service||"Service")}</div>
+ <div>Customer: ${esc(x.customerName||"")}</div>
+ <div class="phone">📞 Customer: ${esc(x.customerPhone||"Not provided")}</div>
+ <div>📍 ${esc(x.location||"")} • ${esc(x.city||"")}</div>
+ <div>${esc(x.description||"")}</div>
+ <div class="money">Final Price: <strong>${money(p)}</strong><br>Mule QuickFix: <strong>${money(c)}</strong><br>Technician: <strong>${money(earn)}</strong></div>
+ <div class="actions"><button class="blue" onclick="price('${x.id}',${p})">SET PRICE</button><button class="orange" onclick="calc('${x.id}',${p})">CALCULATE</button></div>
+ </div>`}).join(""):"<div class='empty'>No jobs found.</div>";
 }
 
-function renderUsers(){
-
-let all=Object.entries(users);
-let customers=all.filter(x=>x[1].role==="customer");
-let techs=all.filter(x=>x[1].role==="technician");
-
-$("customers").textContent=customers.length;
-$("technicians").textContent=techs.length;
-$("pending").textContent=techs.filter(x=>x[1].status==="pending").length;
-
-let q=$("techSearch").value.toLowerCase();
-
-let list=techs.filter(([id,u])=>{
-let text=(u.fullName+" "+u.phone+" "+u.service+" "+u.city).toLowerCase();
-return(techFilter==="all"||u.status===techFilter)&&text.includes(q);
-});
-
-$("techList").innerHTML=list.length?list.map(([id,u])=>`
-
-<div class="item">
-<strong>${esc(u.fullName||"Technician")}</strong>
-<div class="meta">
-📞 ${esc(u.phone||"—")}<br>
-🔧 ${esc(u.service||"—")}<br>
-📍 ${esc(u.city||"—")}<br>
-⭐ ${esc(u.experience||0)} years experience
-</div>
-<span class="badge">${esc(u.status||"pending")}</span><br>
-
-${u.status==="pending"?`
-<button class="approve" onclick="tech('${id}','approved')">✓ Approve</button>
-<button class="reject" onclick="tech('${id}','rejected')">✕ Reject</button>`:""}
-
-${u.status==="approved"?`
-<button class="suspend" onclick="tech('${id}','suspended')">Suspend</button>`:""}
-
-${u.status==="suspended"?`
-<button class="activate" onclick="tech('${id}','approved')">Reactivate</button>`:""}
-
-</div>
-`).join(""):`<div class="empty">No technicians found.</div>`;
-
-let cq=$("customerSearch").value.toLowerCase();
-
-let cs=customers.filter(([id,u])=>
-(u.fullName+" "+u.phone+" "+u.city).toLowerCase().includes(cq)
-);
-
-$("customerList").innerHTML=cs.length?cs.slice(0,50).map(([id,u])=>`
-
-<div class="item">
-<strong>${esc(u.fullName||"Customer")}</strong>
-<div class="meta">
-📞 ${esc(u.phone||"—")}<br>
-📍 ${esc(u.city||"—")}
-</div>
-<span class="badge">${esc(u.status||"active")}</span>
-</div>
-
-`).join(""):`<div class="empty">No customers found.</div>`;
-
-}
-
-function renderJobs(){
-
-let all=Object.entries(jobs);
-
-$("totalJobs").textContent=all.length;
-$("active").textContent=all.filter(x=>["accepted","in_progress"].includes(x[1].status)).length;
-$("completed").textContent=all.filter(x=>x[1].status==="completed").length;
-
-let value=0,revenue=0;
-
-all.forEach(([id,j])=>{
-value+=Number(j.estimatedPrice||0);
-revenue+=Number(j.platformCommission||0);
-});
-
-$("jobValue").textContent="K"+value.toFixed(2);
-$("revenue").textContent="K"+revenue.toFixed(2);
-
-let q=$("jobSearch").value.toLowerCase();
-
-let list=all.filter(([id,j])=>{
-let text=(j.service+" "+j.customerName+" "+j.technicianName+" "+j.city).toLowerCase();
-return(jobFilter==="all"||j.status===jobFilter)&&text.includes(q);
-});
-
-list.sort((a,b)=>Number(b[1].createdAt||0)-Number(a[1].createdAt||0));
-
-$("jobList").innerHTML=list.length?list.slice(0,50).map(([id,j])=>{
-
-let price=Number(j.estimatedPrice||0);
-let c=Number(j.platformCommission||0);
-let t=Number(j.technicianAmount||0);
-
-return`
-
-<div class="item">
-
-<strong>${esc(j.service||"Service Request")}</strong>
-
-<div class="meta">
-👤 ${esc(j.customerName||"—")}<br>
-👷 ${esc(j.technicianName||"Not assigned")}<br>
-📍 ${esc(j.location||"—")}, ${esc(j.city||"—")}<br>
-🚨 ${esc(j.urgency||"normal")}
-</div>
-
-<div class="money">
-Job Price: <b>K${price.toFixed(2)}</b><br>
-Mule QuickFix: <b>K${c.toFixed(2)}</b><br>
-Technician: <b>K${t.toFixed(2)}</b>
-</div>
-
-<span class="badge">${esc(j.status||"pending")}</span>
-
-<br>
-
-<button class="price" onclick="setPrice('${id}')">
-💵 ${price>0?"Change Price":"Set Price"}
-</button>
-
-${price>0?`
-<button class="approve" onclick="applyMoney('${id}')">
-💰 Apply Commission
-</button>`:""}
-
-</div>
-
-`;
-
-}).join(""):`<div class="empty">No jobs found.</div>`;
-
-}
-
-window.setPrice=async id=>{
-
-let j=jobs[id];
-if(!j)return;
-
-let old=Number(j.estimatedPrice||0);
-
-let input=prompt(
-"Enter final price for this job in Kwacha:",
-old>0?old:""
-);
-
-if(input===null)return;
-
-let price=Number(input);
-
-if(!Number.isFinite(price)||price<=0){
-msg("error","Enter a valid price greater than K0.");
-return;
-}
-
-try{
-
-await update(ref(db,"jobs/"+id),{
-estimatedPrice:Number(price.toFixed(2)),
-platformCommission:0,
-technicianAmount:0,
-paymentStatus:"unpaid",
-updatedAt:Date.now()
-});
-
-msg("success","Job price set to K"+price.toFixed(2));
-
-}catch(e){
-msg("error","Could not set price: "+e.message);
-}
-
+window.price=async(id,current)=>{
+ let v=prompt("Enter final job price in Kwacha:",current);
+ if(v===null||isNaN(v)||Number(v)<0)return;
+ let p=Number(v),c=commission(p);
+ await update(ref(db,"jobs/"+id),{finalPrice:p,platformCommission:c,technicianAmount:p-c,updatedAt:Date.now()});
+ msg("Job price updated.");
 };
 
-window.applyMoney=async id=>{
+window.calc=async(id,p)=>{
+ let c=commission(p);
+ await update(ref(db,"jobs/"+id),{platformCommission:c,technicianAmount:p-c,commissionRate:settings.commissionRate,updatedAt:Date.now()});
+ msg("Commission calculated.");
+};
 
-let j=jobs[id];
-if(!j)return;
-
-let price=Number(j.estimatedPrice||0);
-
-if(price<=0){
-msg("error","Set the job price first.");
-return;
+function renderPayments(list){
+ let a=list.filter(x=>x.commissionStatus==="pending");
+ $("payments").innerHTML=a.length?a.map(x=>`
+ <div class="card">
+ <div class="title">${esc(x.service)} — ${money(x.platformCommission)}</div>
+ <div>Technician: ${esc(x.technicianName||"")}</div>
+ <div>Reference: <b>${esc(x.commissionPaymentReference||"")}</b></div>
+ <div class="actions">
+ <button class="green" onclick="pay('${x.id}','paid')">CONFIRM</button>
+ <button class="red" onclick="pay('${x.id}','unpaid')">REJECT</button>
+ </div></div>`).join(""):"<div class='empty'>No pending commission payments.</div>";
 }
 
-let r=calc(price);
+window.pay=async(id,status)=>{
+ let x=jobs[id]||{};
+ if(status==="paid"){
+  let method=prompt("Payment method: Airtel Money, MTN Money or Zamtel Money");
+  if(!method)return;
+  await update(ref(db,"jobs/"+id),{commissionStatus:"paid",commissionPaymentMethod:method,commissionPaidAt:Date.now(),updatedAt:Date.now()});
+ }else{
+  await update(ref(db,"jobs/"+id),{commissionStatus:"unpaid",commissionPaymentReference:null,updatedAt:Date.now()});
+ }
+ msg(status==="paid"?"Commission confirmed.":"Payment rejected.");
+};
 
-if(!confirm(
-"Job: K"+r.price.toFixed(2)+
-"\nMule QuickFix: K"+r.commission.toFixed(2)+
-"\nTechnician: K"+r.technician.toFixed(2)+
-"\n\nApply commission?"
-))return;
-
-try{
-
-await update(ref(db,"jobs/"+id),{
-platformCommission:Number(r.commission.toFixed(2)),
-technicianAmount:Number(r.technician.toFixed(2)),
-commissionType:commission.type,
-commissionRate:commission.value,
-paymentStatus:"calculated",
-calculatedAt:Date.now(),
-updatedAt:Date.now()
-});
-
-msg("success","Commission applied successfully.");
-
-}catch(e){
-msg("error",e.message);
+function renderCustomers(list){
+ let q=$("cs").value.toLowerCase();
+ list=list.filter(x=>JSON.stringify(x).toLowerCase().includes(q));
+ $("customerList").innerHTML=list.length?list.map(x=>`
+ <div class="card"><div class="title">${esc(x.fullName||"Customer")}</div>
+ <div>📞 ${esc(x.phone||"No phone")}</div><div>📧 ${esc(x.email||"")}</div>
+ <div>📍 ${esc(x.city||"")}</div></div>`).join(""):"<div class='empty'>No customers found.</div>";
 }
 
-};
+["ts","tf","js","jf","cs"].forEach(id=>$(id).addEventListener("input",render));
 
-window.tech=async(id,status)=>{
-
-if(!confirm("Change technician status to "+status+"?"))return;
-
-try{
-
-await update(ref(db,"users/"+id),{
-status,updatedAt:Date.now()
-});
-
-msg("success","Technician updated.");
-
-}catch(e){msg("error",e.message)}
-
-};
-
-document.querySelectorAll("[data-filter]").forEach(b=>{
-b.onclick=()=>{
-document.querySelectorAll("[data-filter]").forEach(x=>x.classList.remove("active"));
-b.classList.add("active");
-techFilter=b.dataset.filter;
-renderUsers();
-};
-});
-
-document.querySelectorAll("[data-job]").forEach(b=>{
-b.onclick=()=>{
-document.querySelectorAll("[data-job]").forEach(x=>x.classList.remove("active"));
-b.classList.add("active");
-jobFilter=b.dataset.job;
-renderJobs();
-};
-});
-
-$("techSearch").oninput=renderUsers;
-$("customerSearch").oninput=renderUsers;
-$("jobSearch").oninput=renderJobs;
-
+$("logout").onclick=async()=>{await signOut(auth);location.href="../login.html"};
 </script>
 
 </body>
