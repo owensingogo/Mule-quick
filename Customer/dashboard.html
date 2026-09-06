@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0b5cff">
+
+  <title>Customer Dashboard | Mule QuickFix</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f5f7fb;
+      color: #172033;
+      padding-bottom: 80px;
+    }
+
+    .header {
+      background: #fff;
+      border-bottom: 1px solid #e5e9f1;
+      padding: 13px 17px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-inner {
+      max-width: 1050px;
+      margin: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: #0b5cff;
+      font-weight: 800;
+      font-size: 16px;
+    }
+
+    .logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 11px;
+      background: #0b5cff;
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-size: 19px;
+    }
+
+    .profile-btn {
+      width: 38px;
+      height: 38px;
+      border: 0;
+      border-radius: 50%;
+      background: #edf4ff;
+      color: #0b5cff;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    .container {
+      max-width: 1050px;
+      margin: auto;
+      padding: 20px 17px;
+    }
+
+    .welcome {
+      margin-bottom: 20px;
+    }
+
+    .welcome small {
+      color: #738096;
+      font-size: 13px;
+    }
+
+    .welcome h1 {
+      font-size: 25px;
+      margin-top: 3px;
+    }
+
+    .hero-card {
+      background: linear-gradient(135deg, #0b5cff, #1740a8);
+      color: #fff;
+      border-radius: 20px;
+      padding: 23px 19px;
+      margin-bottom: 25px;
+      box-shadow: 0 12px 30px rgba(11, 92, 255, .18);
+    }
+
+    .hero-card h2 {
+      font-size: 22px;
+      margin-bottom: 7px;
+    }
+
+    .hero-card p {
+      color: #e4ecff;
+      font-size: 13px;
+      margin-bottom: 18px;
+    }
+
+    .request-btn {
+      display: inline-block;
+      background: #fff;
+      color: #0b5cff;
+      border: 0;
+      padding: 13px 17px;
+      border-radius: 11px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .section-title {
+      margin-bottom: 14px;
+    }
+
+    .section-title h2 {
+      font-size: 19px;
+    }
+
+    .section-title p {
+      color: #738096;
+      font-size: 12px;
+      margin-top: 2px;
+    }
+
+    .services {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 11px;
+      margin-bottom: 27px;
+    }
+
+    .service {
+      background: #fff;
+      border: 1px solid #e5e9f1;
+      border-radius: 15px;
+      padding: 16px 13px;
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    .service:active {
+      transform: scale(.97);
+    }
+
+    .service-icon {
+      width: 42px;
+      height: 42px;
+      background: #edf4ff;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      font-size: 21px;
+      margin-bottom: 9px;
+    }
+
+    .service h3 {
+      font-size: 14px;
+      margin-bottom: 2px;
+    }
+
+    .service p {
+      font-size: 11px;
+      color: #778298;
+    }
+
+    .job-card {
+      background: #fff;
+      border: 1px solid #e5e9f1;
+      border-radius: 16px;
+      padding: 17px;
+      margin-bottom: 12px;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 27px 15px;
+      color: #7b8598;
+      background: #fff;
+      border: 1px dashed #dce2ec;
+      border-radius: 15px;
+      font-size: 13px;
+    }
+
+    .empty-icon {
+      font-size: 32px;
+      margin-bottom: 7px;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #fff;
+      border-top: 1px solid #e5e9f1;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 8px 5px;
+      z-index: 200;
+    }
+
+    .nav-item {
+      border: 0;
+      background: transparent;
+      text-align: center;
+      color: #7a8497;
+      font-size: 10px;
+      cursor: pointer;
+    }
+
+    .nav-item.active {
+      color: #0b5cff;
+      font-weight: 800;
+    }
+
+    .nav-icon {
+      display: block;
+      font-size: 19px;
+      margin-bottom: 2px;
+    }
+
+    .logout {
+      color: #d92d20;
+    }
+
+    @media (min-width: 700px) {
+
+      .services {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .bottom-nav {
+        left: 50%;
+        right: auto;
+        transform: translateX(-50%);
+        width: 500px;
+        border: 1px solid #e5e9f1;
+        border-radius: 16px 16px 0 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="header">
+
+  <div class="header-inner">
+
+    <div class="brand">
+      <div class="logo">🔧</div>
+      <span>MULE QUICKFIX</span>
+    </div>
+
+    <button
+      class="profile-btn"
+      onclick="goProfile()"
+    >
+      👤
+    </button>
+
+  </div>
+
+</header>
+
+
+<main class="container">
+
+  <section class="welcome">
+
+    <small>Welcome back</small>
+
+    <h1 id="customerName">
+      Customer
+    </h1>
+
+  </section>
+
+
+  <section class="hero-card">
+
+    <h2>What do you need fixed?</h2>
+
+    <p>
+      Find a service professional for your home,
+      vehicle or business.
+    </p>
+
+    <button
+      class="request-btn"
+      onclick="requestService()"
+    >
+      🔧 Request a Service
+    </button>
+
+  </section>
+
+
+  <section>
+
+    <div class="section-title">
+
+      <h2>Popular services</h2>
+
+      <p>
+        Choose a service to get started.
+      </p>
+
+    </div>
+
+
+    <div class="services">
+
+      <div class="service"
+           onclick="chooseService('Plumbing')">
+
+        <div class="service-icon">🔧</div>
+
+        <h3>Plumbing</h3>
+
+        <p>
+          Pipes, taps and leaks
+        </p>
+
+      </div>
+
+
+      <div class="service"
+           onclick="chooseService('Electrical')">
+
+        <div class="service-icon">⚡</div>
+
+        <h3>Electrical</h3>
+
+        <p>
+          Electrical repairs
+        </p>
+
+      </div>
+
+
+      <div class="service"
+           onclick="chooseService('Mechanics')">
+
+        <div class="service-icon">🚗</div>
+
+        <h3>Mechanics</h3>
+
+        <p>
+          Vehicle repairs
+        </p>
+
+      </div>
+
+
+      <div class="service"
+           onclick="chooseService('Phone Repair')">
+
+        <div class="service-icon">📱</div>
+
+        <h3>Phone Repair</h3>
+
+        <p>
+          Phone problems
+        </p>
+
+      </div>
+
+
+      <div class="service"
+           onclick="chooseService('Computer Repair')">
+
+        <div class="service-icon">💻</div>
+
+        <h3>Computer</h3>
+
+        <p>
+          Computer support
+        </p>
+
+      </div>
+
+
+      <div class="service"
+           onclick="chooseService('Locksmith')">
+
+        <div class="service-icon">🔑</div>
+
+        <h3>Locksmith</h3>
+
+        <p>
+          Locks and keys
+        </p>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <section>
+
+    <div class="section-title">
+
+      <h2>My recent requests</h2>
+
+      <p>
+        Track your service requests.
+      </p>
+
+    </div>
+
+
+    <div id="jobsContainer">
+
+      <div class="empty">
+
+        <div class="empty-icon">📋</div>
+
+        <strong>No service requests yet</strong>
+
+        <p style="margin-top:5px;">
+          Your requests will appear here.
+        </p>
+
+      </div>
+
+    </div>
+
+  </section>
+
+</main>
+
+
+<nav class="bottom-nav">
+
+  <button class="nav-item active">
+
+    <span class="nav-icon">🏠</span>
+    Home
+
+  </button>
+
+
+  <button
+    class="nav-item"
+    onclick="requestService()"
+  >
+
+    <span class="nav-icon">🔧</span>
+    Request
+
+  </button>
+
+
+  <button
+    class="nav-item"
+    onclick="alert('Your service history will appear here.')"
+  >
+
+    <span class="nav-icon">📋</span>
+    Jobs
+
+  </button>
+
+
+  <button
+    class="nav-item"
+    onclick="goProfile()"
+  >
+
+    <span class="nav-icon">👤</span>
+    Profile
+
+  </button>
+
+</nav>
+
+
+<script type="module">
+
+  import { auth, db } from "../js/firebase.js";
+
+  import {
+    onAuthStateChanged,
+    signOut
+  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+  import {
+    ref,
+    get
+  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+
+
+  const customerName =
+    document.getElementById("customerName");
+
+
+  onAuthStateChanged(auth, async (user) => {
+
+    if (!user) {
+
+      window.location.href =
+        "../login.html";
+
+      return;
+
+    }
+
+
+    try {
+
+      const snapshot =
+        await get(
+          ref(db, "users/" + user.uid)
+        );
+
+
+      if (snapshot.exists()) {
+
+        const data = snapshot.val();
+
+        customerName.textContent =
+          data.fullName || "Customer";
+
+      } else {
+
+        customerName.textContent =
+          user.displayName || "Customer";
+
+      }
+
+    } catch (error) {
+
+      console.error(error);
+
+      customerName.textContent =
+        user.displayName || "Customer";
+
+    }
+
+  });
+
+
+  window.requestService = function () {
+
+    window.location.href =
+      "request-service.html";
+
+  };
+
+
+  window.chooseService = function (service) {
+
+    localStorage.setItem(
+      "selectedQuickFixService",
+      service
+    );
+
+    window.location.href =
+      "request-service.html";
+
+  };
+
+
+  window.goProfile = function () {
+
+    window.location.href =
+      "profile.html";
+
+  };
+
+
+  window.logout = async function () {
+
+    await signOut(auth);
+
+    window.location.href =
+      "../login.html";
+
+  };
+
+</script>
+
+</body>
+</html>

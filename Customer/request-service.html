@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Request a Service | Mule QuickFix</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f5f7fb;
+    color:#172033;
+    min-height:100vh;
+}
+
+.header{
+    background:#0b5cff;
+    color:white;
+    padding:18px 20px;
+    position:sticky;
+    top:0;
+    z-index:10;
+    box-shadow:0 3px 12px rgba(0,0,0,.12);
+}
+
+.header-inner{
+    max-width:650px;
+    margin:auto;
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+.back{
+    width:40px;
+    height:40px;
+    border:0;
+    border-radius:12px;
+    background:rgba(255,255,255,.16);
+    color:white;
+    font-size:22px;
+    cursor:pointer;
+}
+
+.logo{
+    font-size:19px;
+    font-weight:800;
+}
+
+.container{
+    max-width:650px;
+    margin:auto;
+    padding:22px 16px 40px;
+}
+
+.hero{
+    margin-bottom:20px;
+}
+
+.hero h1{
+    font-size:27px;
+    margin-bottom:8px;
+}
+
+.hero p{
+    color:#687386;
+    line-height:1.5;
+}
+
+.card{
+    background:white;
+    border-radius:20px;
+    padding:20px;
+    margin-bottom:18px;
+    box-shadow:0 5px 20px rgba(18,38,63,.07);
+}
+
+.section-title{
+    font-size:16px;
+    font-weight:800;
+    margin-bottom:14px;
+}
+
+label{
+    display:block;
+    font-size:14px;
+    font-weight:700;
+    margin:15px 0 7px;
+}
+
+input,
+select,
+textarea{
+    width:100%;
+    padding:14px;
+    border:1px solid #dce2ec;
+    border-radius:12px;
+    outline:none;
+    background:#fff;
+    color:#172033;
+    font-size:15px;
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+    border-color:#0b5cff;
+    box-shadow:0 0 0 3px rgba(11,92,255,.08);
+}
+
+textarea{
+    min-height:120px;
+    resize:vertical;
+}
+
+.service-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+}
+
+.service{
+    border:2px solid #e5e9f1;
+    background:#fff;
+    border-radius:15px;
+    padding:15px 10px;
+    cursor:pointer;
+    text-align:center;
+    transition:.2s;
+}
+
+.service:hover{
+    border-color:#0b5cff;
+}
+
+.service.selected{
+    border-color:#0b5cff;
+    background:#eef4ff;
+}
+
+.service-icon{
+    font-size:27px;
+    margin-bottom:7px;
+}
+
+.service-name{
+    font-size:13px;
+    font-weight:800;
+}
+
+.urgent-box{
+    display:flex;
+    gap:10px;
+    margin-top:8px;
+}
+
+.urgent{
+    flex:1;
+    border:2px solid #e5e9f1;
+    border-radius:12px;
+    padding:12px;
+    text-align:center;
+    cursor:pointer;
+    font-size:13px;
+    font-weight:700;
+}
+
+.urgent.selected{
+    border-color:#0b5cff;
+    background:#eef4ff;
+}
+
+.notice{
+    background:#f0f6ff;
+    border-left:4px solid #0b5cff;
+    padding:13px;
+    border-radius:10px;
+    font-size:13px;
+    color:#46546a;
+    line-height:1.5;
+    margin-top:15px;
+}
+
+.price-box{
+    background:#f7f9fc;
+    border-radius:14px;
+    padding:15px;
+    margin-top:15px;
+}
+
+.price-row{
+    display:flex;
+    justify-content:space-between;
+    padding:5px 0;
+}
+
+.price-label{
+    color:#697586;
+    font-size:14px;
+}
+
+.price-value{
+    font-weight:800;
+}
+
+.submit-btn{
+    width:100%;
+    border:0;
+    background:#0b5cff;
+    color:white;
+    padding:16px;
+    border-radius:14px;
+    font-size:16px;
+    font-weight:800;
+    cursor:pointer;
+    margin-top:18px;
+}
+
+.submit-btn:disabled{
+    opacity:.6;
+    cursor:not-allowed;
+}
+
+.message{
+    display:none;
+    padding:14px;
+    border-radius:12px;
+    margin-bottom:15px;
+    font-size:14px;
+    line-height:1.5;
+}
+
+.success{
+    background:#eaf8ef;
+    color:#176b38;
+}
+
+.error{
+    background:#fff0f0;
+    color:#a32626;
+}
+
+.loading{
+    display:none;
+    text-align:center;
+    padding:10px;
+    color:#64748b;
+    font-size:14px;
+}
+
+@media(max-width:420px){
+    .service-grid{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .hero h1{
+        font-size:24px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+    <div class="header-inner">
+
+        <button class="back" onclick="history.back()">‹</button>
+
+        <div class="logo">
+            🔧 MULE QUICKFIX
+        </div>
+
+    </div>
+</header>
+
+
+<main class="container">
+
+    <div class="hero">
+        <h1>Request a Service</h1>
+        <p>
+            Tell us what you need fixed and we'll connect you with
+            a suitable professional.
+        </p>
+    </div>
+
+
+    <div id="message" class="message"></div>
+
+
+    <div class="card">
+
+        <div class="section-title">
+            1. Choose a Service
+        </div>
+
+        <div class="service-grid">
+
+            <div class="service" data-service="Plumbing">
+                <div class="service-icon">🚰</div>
+                <div class="service-name">Plumbing</div>
+            </div>
+
+            <div class="service" data-service="Electrical">
+                <div class="service-icon">⚡</div>
+                <div class="service-name">Electrical</div>
+            </div>
+
+            <div class="service" data-service="Mechanics">
+                <div class="service-icon">🚗</div>
+                <div class="service-name">Mechanics</div>
+            </div>
+
+            <div class="service" data-service="Phone Repair">
+                <div class="service-icon">📱</div>
+                <div class="service-name">Phone Repair</div>
+            </div>
+
+            <div class="service" data-service="Computer Repair">
+                <div class="service-icon">💻</div>
+                <div class="service-name">Computer Repair</div>
+            </div>
+
+            <div class="service" data-service="Locksmith">
+                <div class="service-icon">🔐</div>
+                <div class="service-name">Locksmith</div>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="section-title">
+            2. Describe the Problem
+        </div>
+
+        <label for="description">
+            What needs to be fixed?
+        </label>
+
+        <textarea
+            id="description"
+            placeholder="Example: My kitchen tap is leaking badly..."
+        ></textarea>
+
+        <label for="location">
+            Service Location / Area
+        </label>
+
+        <input
+            id="location"
+            type="text"
+            placeholder="Example: Bulangililo, Kitwe"
+        >
+
+        <label for="city">
+            City
+        </label>
+
+        <select id="city">
+
+            <option value="">Select your city</option>
+            <option value="Kitwe">Kitwe</option>
+            <option value="Ndola">Ndola</option>
+            <option value="Lusaka">Lusaka</option>
+            <option value="Chingola">Chingola</option>
+            <option value="Mufulira">Mufulira</option>
+            <option value="Livingstone">Livingstone</option>
+            <option value="Other">Other</option>
+
+        </select>
+
+        <label for="phone">
+            Contact Phone Number
+        </label>
+
+        <input
+            id="phone"
+            type="tel"
+            placeholder="097XXXXXXXX"
+        >
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="section-title">
+            3. How Urgent Is It?
+        </div>
+
+        <div class="urgent-box">
+
+            <div class="urgent selected" data-urgency="Normal">
+                🕐 Normal
+            </div>
+
+            <div class="urgent" data-urgency="Urgent">
+                🚨 Urgent
+            </div>
+
+        </div>
+
+        <div class="notice">
+            💡 <strong>Price to be confirmed:</strong>
+            The professional will assess the job before the final
+            price is agreed.
+        </div>
+
+        <div class="price-box">
+
+            <div class="price-row">
+                <span class="price-label">Estimated Price</span>
+                <span class="price-value">To be confirmed</span>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="section-title">
+            4. Submit Request
+        </div>
+
+        <p style="font-size:13px;color:#687386;line-height:1.5;">
+            Once submitted, your request will be sent to Mule QuickFix.
+            A suitable technician can then accept the job.
+        </p>
+
+        <button
+            id="submitBtn"
+            class="submit-btn"
+        >
+            🔧 Request a Professional
+        </button>
+
+        <div id="loading" class="loading">
+            Sending your request...
+        </div>
+
+    </div>
+
+</main>
+
+
+<script type="module">
+
+import {
+    auth,
+    db
+} from "../js/firebase.js";
+
+import {
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+import {
+    ref,
+    get,
+    push,
+    set,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+
+
+let currentUser = null;
+let selectedService = "";
+let selectedUrgency = "Normal";
+
+
+const message = document.getElementById("message");
+const submitBtn = document.getElementById("submitBtn");
+const loading = document.getElementById("loading");
+
+
+function showMessage(text, type){
+
+    message.textContent = text;
+
+    message.className =
+        "message " + type;
+
+    message.style.display = "block";
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+}
+
+
+function hideMessage(){
+
+    message.style.display = "none";
+
+}
+
+
+/* =========================
+   CHECK LOGIN
+========================= */
+
+onAuthStateChanged(auth, async (user)=>{
+
+    if(!user){
+
+        window.location.href =
+            "../login.html";
+
+        return;
+
+    }
+
+    currentUser = user;
+
+    try{
+
+        const userRef =
+            ref(db, "users/" + user.uid);
+
+        const snapshot =
+            await get(userRef);
+
+        if(snapshot.exists()){
+
+            const data =
+                snapshot.val();
+
+            if(data.status === "suspended"){
+
+                showMessage(
+                    "Your account has been suspended. Please contact Mule QuickFix support.",
+                    "error"
+                );
+
+                submitBtn.disabled = true;
+
+                return;
+
+            }
+
+            /* Auto-fill phone */
+
+            if(data.phone){
+
+                document.getElementById("phone").value =
+                    data.phone;
+
+            }
+
+            /* Auto-select city */
+
+            if(data.city){
+
+                const city =
+                    document.getElementById("city");
+
+                city.value = data.city;
+
+            }
+
+        }
+
+    }catch(error){
+
+        console.error(error);
+
+    }
+
+
+    /* Read service selected from dashboard */
+
+    const savedService =
+        localStorage.getItem(
+            "selectedQuickFixService"
+        );
+
+    if(savedService){
+
+        selectService(savedService);
+
+    }
+
+});
+
+
+/* =========================
+   SERVICE SELECTION
+========================= */
+
+function selectService(serviceName){
+
+    const services =
+        document.querySelectorAll(".service");
+
+    services.forEach(service=>{
+
+        service.classList.remove("selected");
+
+        if(
+            service.dataset.service === serviceName
+        ){
+
+            service.classList.add("selected");
+
+        }
+
+    });
+
+    selectedService = serviceName;
+
+}
+
+
+document.querySelectorAll(".service")
+.forEach(service=>{
+
+    service.addEventListener("click", ()=>{
+
+        selectService(
+            service.dataset.service
+        );
+
+    });
+
+});
+
+
+/* =========================
+   URGENCY
+========================= */
+
+document.querySelectorAll(".urgent")
+.forEach(option=>{
+
+    option.addEventListener("click", ()=>{
+
+        document
+            .querySelectorAll(".urgent")
+            .forEach(item =>
+                item.classList.remove("selected")
+            );
+
+        option.classList.add("selected");
+
+        selectedUrgency =
+            option.dataset.urgency;
+
+    });
+
+});
+
+
+/* =========================
+   SUBMIT JOB
+========================= */
+
+submitBtn.addEventListener("click", async ()=>{
+
+    hideMessage();
+
+    if(!currentUser){
+
+        showMessage(
+            "Please login before requesting a service.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    const description =
+        document
+        .getElementById("description")
+        .value.trim();
+
+
+    const location =
+        document
+        .getElementById("location")
+        .value.trim();
+
+
+    const city =
+        document
+        .getElementById("city")
+        .value;
+
+
+    const phone =
+        document
+        .getElementById("phone")
+        .value.trim();
+
+
+    /* Validation */
+
+    if(!selectedService){
+
+        showMessage(
+            "Please select the service you need.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if(!description){
+
+        showMessage(
+            "Please describe the problem.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if(description.length < 10){
+
+        showMessage(
+            "Please provide a little more detail about the problem.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if(!location){
+
+        showMessage(
+            "Please enter the service location or area.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if(!city){
+
+        showMessage(
+            "Please select your city.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if(!phone){
+
+        showMessage(
+            "Please enter your contact phone number.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    submitBtn.disabled = true;
+
+    submitBtn.style.display = "none";
+
+    loading.style.display = "block";
+
+
+    try{
+
+        /* Get customer profile */
+
+        const userRef =
+            ref(
+                db,
+                "users/" + currentUser.uid
+            );
+
+        const userSnapshot =
+            await get(userRef);
+
+
+        let customerName =
+            currentUser.displayName || "Customer";
+
+
+        if(userSnapshot.exists()){
+
+            const userData =
+                userSnapshot.val();
+
+            if(userData.fullName){
+
+                customerName =
+                    userData.fullName;
+
+            }
+
+        }
+
+
+        /* Create new job */
+
+        const jobsRef =
+            ref(db, "jobs");
+
+        const newJobRef =
+            push(jobsRef);
+
+
+        const jobId =
+            newJobRef.key;
+
+
+        const jobData = {
+
+            id: jobId,
+
+            customerId:
+                currentUser.uid,
+
+            customerName:
+                customerName,
+
+            customerPhone:
+                phone,
+
+            service:
+                selectedService,
+
+            description:
+                description,
+
+            location:
+                location,
+
+            city:
+                city,
+
+            urgency:
+                selectedUrgency,
+
+            status:
+                "pending",
+
+            technicianId:
+                null,
+
+            technicianName:
+                null,
+
+            estimatedPrice:
+                0,
+
+            technicianAmount:
+                0,
+
+            platformCommission:
+                0,
+
+            paymentStatus:
+                "unpaid",
+
+            createdAt:
+                serverTimestamp(),
+
+            updatedAt:
+                serverTimestamp()
+
+        };
+
+
+        await set(
+            newJobRef,
+            jobData
+        );
+
+
+        /* Clear selected dashboard service */
+
+        localStorage.removeItem(
+            "selectedQuickFixService"
+        );
+
+
+        showMessage(
+            "✅ Your service request has been submitted successfully! Mule QuickFix will look for a suitable professional.",
+            "success"
+        );
+
+
+        submitBtn.style.display =
+            "block";
+
+        submitBtn.disabled =
+            false;
+
+        loading.style.display =
+            "none";
+
+
+        /* Redirect after success */
+
+        setTimeout(()=>{
+
+            window.location.href =
+                "dashboard.html";
+
+        },2500);
+
+
+    }catch(error){
+
+        console.error(
+            "Job submission error:",
+            error
+        );
+
+        showMessage(
+            "Unable to submit your request. Please check your internet connection and try again.",
+            "error"
+        );
+
+        submitBtn.style.display =
+            "block";
+
+        submitBtn.disabled =
+            false;
+
+        loading.style.display =
+            "none";
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>
