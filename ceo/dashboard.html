@@ -4,46 +4,305 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Mule QuickFix | CEO Dashboard</title>
+
 <style>
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#f4f7fb;color:#172033}
-header{background:#0b5cff;color:#fff;padding:16px;display:flex;justify-content:space-between;align-items:center}
-.logo{font-weight:800;font-size:18px}
-.admin{font-size:11px;background:#ffffff22;padding:6px 9px;border-radius:20px}
-main{max-width:900px;margin:auto;padding:15px}
-h2{margin:7px 0 10px;font-size:22px}
-.sub{color:#667085;font-size:13px;margin-bottom:15px}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.card{background:#fff;border-radius:15px;padding:15px;box-shadow:0 4px 15px #0000000d;margin-bottom:13px}
-.stat b{display:block;font-size:24px;margin-top:6px}
-.stat span{font-size:12px;color:#667085}
-.blue{color:#0b5cff}.orange{color:#f59e0b}.green{color:#16a34a}.red{color:#dc2626}
-.section-title{display:flex;justify-content:space-between;margin-bottom:9px}
-.section-title h3{margin:0;font-size:16px}
-.item{border:1px solid #e7ebf0;border-radius:12px;padding:12px;margin:8px 0}
-.item strong{font-size:14px}
-.meta{font-size:12px;color:#667085;line-height:1.7;margin-top:5px}
-button{border:0;border-radius:8px;padding:9px 12px;font-weight:700;cursor:pointer;margin:4px 4px 0 0}
-.approve{background:#16a34a;color:#fff}
-.reject{background:#fee2e2;color:#b91c1c}
-.logout{background:#fff;color:#0b5cff;padding:8px 10px}
-.empty{text-align:center;color:#667085;padding:15px;font-size:13px}
-.badge{display:inline-block;padding:5px 8px;border-radius:20px;font-size:10px;font-weight:bold;background:#eef2ff;color:#3949ab}
-.job{border-left:4px solid #0b5cff}
-.error{background:#fee2e2;color:#991b1b;border-radius:12px;padding:14px;margin-bottom:14px;font-size:13px;display:none;word-break:break-word}
-.success{background:#dcfce7;color:#166534;border-radius:12px;padding:14px;margin-bottom:14px;font-size:13px;display:none}
-@media(min-width:650px){.grid{grid-template-columns:repeat(3,1fr)}}
+
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:#f4f7fb;
+color:#172033;
+}
+
+header{
+background:#0b5cff;
+color:#fff;
+padding:15px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+position:sticky;
+top:0;
+z-index:20;
+box-shadow:0 3px 12px #0002;
+}
+
+.logo{
+font-weight:900;
+font-size:17px;
+}
+
+.admin{
+font-size:10px;
+background:#ffffff22;
+padding:6px 8px;
+border-radius:20px;
+margin-right:5px;
+}
+
+.logout{
+border:0;
+background:#fff;
+color:#0b5cff;
+font-weight:800;
+padding:8px 10px;
+border-radius:8px;
+}
+
+main{
+max-width:1000px;
+margin:auto;
+padding:15px;
+}
+
+h2{
+margin:5px 0;
+font-size:22px;
+}
+
+.sub{
+font-size:13px;
+color:#667085;
+margin-bottom:16px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:10px;
+}
+
+.card{
+background:#fff;
+border-radius:15px;
+padding:15px;
+box-shadow:0 4px 15px #0000000d;
+margin-bottom:13px;
+}
+
+.stat span{
+font-size:12px;
+color:#667085;
+}
+
+.stat b{
+display:block;
+font-size:25px;
+margin-top:6px;
+}
+
+.blue{color:#0b5cff}
+.orange{color:#f59e0b}
+.green{color:#16a34a}
+.red{color:#dc2626}
+.dark{color:#172033}
+
+.section-title{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:10px;
+}
+
+.section-title h3{
+margin:0;
+font-size:16px;
+}
+
+.item{
+border:1px solid #e7ebf0;
+border-radius:12px;
+padding:12px;
+margin:8px 0;
+background:#fff;
+}
+
+.item strong{
+font-size:14px;
+}
+
+.meta{
+font-size:12px;
+color:#667085;
+line-height:1.7;
+margin-top:5px;
+}
+
+button{
+border:0;
+border-radius:8px;
+padding:8px 11px;
+font-weight:700;
+cursor:pointer;
+margin:4px 4px 0 0;
+}
+
+.approve{
+background:#16a34a;
+color:#fff;
+}
+
+.reject{
+background:#fee2e2;
+color:#b91c1c;
+}
+
+.suspend{
+background:#fff3cd;
+color:#8a5a00;
+}
+
+.activate{
+background:#dbeafe;
+color:#1d4ed8;
+}
+
+.empty{
+text-align:center;
+color:#667085;
+padding:18px 10px;
+font-size:13px;
+}
+
+.badge{
+display:inline-block;
+padding:5px 8px;
+border-radius:20px;
+font-size:10px;
+font-weight:bold;
+background:#eef2ff;
+color:#3949ab;
+margin-top:6px;
+}
+
+.status-pending{
+background:#fff7ed;
+color:#c2410c;
+}
+
+.status-approved,
+.status-completed,
+.status-active{
+background:#dcfce7;
+color:#166534;
+}
+
+.status-rejected,
+.status-suspended{
+background:#fee2e2;
+color:#b91c1c;
+}
+
+.status-accepted{
+background:#dbeafe;
+color:#1d4ed8;
+}
+
+.status-in_progress{
+background:#ede9fe;
+color:#6d28d9;
+}
+
+.job{
+border-left:4px solid #0b5cff;
+}
+
+.search{
+width:100%;
+padding:11px 12px;
+border:1px solid #d9dee8;
+border-radius:10px;
+outline:none;
+font-size:13px;
+margin-bottom:10px;
+}
+
+.search:focus{
+border-color:#0b5cff;
+}
+
+.tabs{
+display:flex;
+gap:6px;
+overflow:auto;
+margin-bottom:10px;
+}
+
+.tab{
+background:#eef2f7;
+color:#475467;
+white-space:nowrap;
+}
+
+.tab.active{
+background:#0b5cff;
+color:#fff;
+}
+
+.error{
+background:#fee2e2;
+color:#991b1b;
+border-radius:12px;
+padding:13px;
+margin-bottom:14px;
+font-size:13px;
+display:none;
+word-break:break-word;
+}
+
+.success{
+background:#dcfce7;
+color:#166534;
+border-radius:12px;
+padding:13px;
+margin-bottom:14px;
+font-size:13px;
+display:none;
+}
+
+.loading{
+text-align:center;
+padding:15px;
+color:#667085;
+font-size:13px;
+}
+
+.money{
+font-weight:800;
+}
+
+@media(min-width:650px){
+
+.grid{
+grid-template-columns:repeat(3,1fr);
+}
+
+}
+
+@media(min-width:850px){
+
+.grid{
+grid-template-columns:repeat(4,1fr);
+}
+
+}
 </style>
 </head>
 
 <body>
 
 <header>
-<div class="logo">🔧 MULE QUICKFIX</div>
+
+<div class="logo">
+🔧 MULE QUICKFIX
+</div>
+
 <div>
 <span class="admin">CEO / ADMIN</span>
 <button class="logout" id="logout">Logout</button>
 </div>
+
 </header>
 
 <main>
@@ -52,45 +311,162 @@ button{border:0;border-radius:8px;padding:9px 12px;font-weight:700;cursor:pointe
 <div id="success" class="success"></div>
 
 <h2>CEO Dashboard 👋</h2>
-<div class="sub">Manage customers, technicians, jobs and platform revenue.</div>
+
+<div class="sub">
+Manage your Mule QuickFix platform from one place.
+</div>
+
+<!-- STATISTICS -->
 
 <div class="grid">
-<div class="card stat"><span>Customers</span><b class="blue" id="customers">0</b></div>
-<div class="card stat"><span>Technicians</span><b class="orange" id="technicians">0</b></div>
-<div class="card stat"><span>Pending Approval</span><b class="red" id="pendingTech">0</b></div>
-<div class="card stat"><span>Active Jobs</span><b class="blue" id="activeJobs">0</b></div>
-<div class="card stat"><span>Completed Jobs</span><b class="green" id="completedJobs">0</b></div>
-<div class="card stat"><span>Commission</span><b class="green" id="commission">K0.00</b></div>
+
+<div class="card stat">
+<span>Customers</span>
+<b class="blue" id="customers">0</b>
 </div>
 
-<div class="card">
-<div class="section-title">
-<h3>👷 Technician Applications</h3>
+<div class="card stat">
+<span>Technicians</span>
+<b class="orange" id="technicians">0</b>
 </div>
+
+<div class="card stat">
+<span>Pending Approval</span>
+<b class="red" id="pendingTech">0</b>
+</div>
+
+<div class="card stat">
+<span>Active Jobs</span>
+<b class="blue" id="activeJobs">0</b>
+</div>
+
+<div class="card stat">
+<span>Completed Jobs</span>
+<b class="green" id="completedJobs">0</b>
+</div>
+
+<div class="card stat">
+<span>Total Jobs</span>
+<b class="dark" id="totalJobs">0</b>
+</div>
+
+<div class="card stat">
+<span>Platform Commission</span>
+<b class="green" id="commission">K0.00</b>
+</div>
+
+<div class="card stat">
+<span>Estimated Job Value</span>
+<b class="orange" id="jobValue">K0.00</b>
+</div>
+
+</div>
+
+
+<!-- TECHNICIANS -->
+
+<div class="card">
+
+<div class="section-title">
+<h3>👷 Technician Management</h3>
+</div>
+
+<input
+class="search"
+id="techSearch"
+placeholder="Search technician by name, phone, service or city..."
+>
+
+<div class="tabs">
+
+<button class="tab active" data-filter="pending">
+Pending
+</button>
+
+<button class="tab" data-filter="approved">
+Approved
+</button>
+
+<button class="tab" data-filter="all">
+All
+</button>
+
+</div>
+
 <div id="techniciansList">
-<div class="empty">Loading...</div>
-</div>
+<div class="loading">Loading technicians...</div>
 </div>
 
+</div>
+
+
+<!-- JOBS -->
+
 <div class="card">
+
 <div class="section-title">
-<h3>🛠️ All Jobs</h3>
-</div>
-<div id="jobsList">
-<div class="empty">Loading...</div>
-</div>
+<h3>🛠️ Service Jobs</h3>
 </div>
 
+<input
+class="search"
+id="jobSearch"
+placeholder="Search jobs by service, customer, technician or city..."
+>
+
+<div class="tabs">
+
+<button class="tab active" data-job-filter="all">
+All
+</button>
+
+<button class="tab" data-job-filter="pending">
+Pending
+</button>
+
+<button class="tab" data-job-filter="accepted">
+Accepted
+</button>
+
+<button class="tab" data-job-filter="in_progress">
+In Progress
+</button>
+
+<button class="tab" data-job-filter="completed">
+Completed
+</button>
+
+</div>
+
+<div id="jobsList">
+<div class="loading">Loading jobs...</div>
+</div>
+
+</div>
+
+
+<!-- CUSTOMERS -->
+
 <div class="card">
+
 <div class="section-title">
 <h3>👥 Customers</h3>
 </div>
+
+<input
+class="search"
+id="customerSearch"
+placeholder="Search customer by name, phone or city..."
+>
+
 <div id="customersList">
-<div class="empty">Loading...</div>
+<div class="loading">Loading customers...</div>
 </div>
+
 </div>
 
 </main>
+
 
 <script type="module">
 
@@ -107,307 +483,43 @@ onValue,
 update
 }from"https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
 
+
 const $=id=>document.getElementById(id);
 
+let allUsers={};
+let allJobs={};
+
+let techFilter="pending";
+let jobFilter="all";
+
+
 function showError(msg){
+
 const e=$("error");
+
 e.textContent="⚠️ "+msg;
 e.style.display="block";
+
+$("success").style.display="none";
+
 }
+
 
 function showSuccess(msg){
+
 const e=$("success");
+
 e.textContent="✅ "+msg;
 e.style.display="block";
-}
 
-$("logout").onclick=async()=>{
-try{
-await signOut(auth);
-location.href="../login.html";
-}catch(e){
-showError(e.message);
-}
-};
+$("error").style.display="none";
 
-onAuthStateChanged(auth,user=>{
-
-if(!user){
-location.href="../login.html";
-return;
-}
-
-console.log("Logged in UID:",user.uid);
-console.log("Logged in Email:",user.email);
-
-onValue(
-ref(db,"users/"+user.uid),
-snap=>{
-
-const u=snap.val();
-
-console.log("CEO USER DATA:",u);
-
-if(!u){
-
-showError(
-"No user profile was found in Firebase for UID: "+
-user.uid
-);
-
-return;
-}
-
-const role=String(u.role??"").trim().toLowerCase();
-
-if(role!=="admin"){
-
-showError(
-"Access denied. Firebase sees role as ["+
-String(u.role)+
-"] for UID: "+
-user.uid
-);
-
-return;
-}
-
-showSuccess(
-"CEO access verified successfully. Welcome "+
-(u.fullName||"CEO")+"!"
-);
-
-loadData();
-
-},
-error=>{
-
-showError(
-"Could not read your CEO profile: "+
-error.message
-);
+setTimeout(()=>{
+e.style.display="none";
+},4000);
 
 }
-);
 
-});
-
-function loadData(){
-
-onValue(
-ref(db,"users"),
-snap=>{
-
-const users=snap.val()||{};
-const arr=Object.entries(users);
-
-const customers=arr.filter(
-x=>x[1].role==="customer"
-);
-
-const techs=arr.filter(
-x=>x[1].role==="technician"
-);
-
-const pending=techs.filter(
-x=>x[1].status==="pending"
-);
-
-$("customers").textContent=customers.length;
-$("technicians").textContent=techs.length;
-$("pendingTech").textContent=pending.length;
-
-$("techniciansList").innerHTML=
-
-pending.length?
-
-pending.map(([id,u])=>`
-
-<div class="item">
-
-<strong>${esc(u.fullName||"Unknown")}</strong>
-
-<div class="meta">
-📞 ${esc(u.phone||"—")}<br>
-🔧 ${esc(u.service||"—")}<br>
-📍 ${esc(u.city||"—")}<br>
-⭐ Experience: ${esc(u.experience||"0")} years
-</div>
-
-<button
-class="approve"
-onclick="changeTech('${id}','approved')">
-Approve
-</button>
-
-<button
-class="reject"
-onclick="changeTech('${id}','rejected')">
-Reject
-</button>
-
-</div>
-
-`).join("")
-
-:
-
-`<div class="empty">
-No pending technician applications.
-</div>`;
-
-$("customersList").innerHTML=
-
-customers.length?
-
-customers.slice(0,20).map(([id,u])=>`
-
-<div class="item">
-
-<strong>${esc(u.fullName||"Customer")}</strong>
-
-<div class="meta">
-📞 ${esc(u.phone||"—")} ·
-📍 ${esc(u.city||"—")}
-</div>
-
-<span class="badge">
-${esc(u.status||"active")}
-</span>
-
-</div>
-
-`).join("")
-
-:
-
-`<div class="empty">
-No customers yet.
-</div>`;
-
-},
-error=>{
-
-showError(
-"Could not load users: "+
-error.message
-);
-
-}
-);
-
-
-onValue(
-ref(db,"jobs"),
-snap=>{
-
-const jobs=snap.val()||{};
-const arr=Object.entries(jobs);
-
-$("activeJobs").textContent=
-arr.filter(x=>
-["accepted","in_progress"].includes(x[1].status)
-).length;
-
-$("completedJobs").textContent=
-arr.filter(x=>
-x[1].status==="completed"
-).length;
-
-let total=0;
-
-arr.forEach(([id,j])=>{
-total+=Number(j.platformCommission||0);
-});
-
-$("commission").textContent=
-"K"+total.toFixed(2);
-
-arr.reverse();
-
-$("jobsList").innerHTML=
-
-arr.length?
-
-arr.slice(0,30).map(([id,j])=>`
-
-<div class="item job">
-
-<strong>
-${esc(j.service||"Service Request")}
-</strong>
-
-<div class="meta">
-
-👤 Customer:
-${esc(j.customerName||"—")}<br>
-
-👷 Technician:
-${esc(j.technicianName||"Not assigned")}<br>
-
-📍 ${esc(j.location||"—")},
-${esc(j.city||"—")}<br>
-
-💰 Price:
-K${Number(j.estimatedPrice||0).toFixed(2)}<br>
-
-💼 Commission:
-K${Number(j.platformCommission||0).toFixed(2)}
-
-</div>
-
-<span class="badge">
-${esc(j.status||"pending")}
-</span>
-
-</div>
-
-`).join("")
-
-:
-
-`<div class="empty">
-No jobs yet.
-</div>`;
-
-},
-error=>{
-
-showError(
-"Could not load jobs: "+
-error.message
-);
-
-}
-);
-
-}
-
-window.changeTech=async(id,status)=>{
-
-try{
-
-await update(
-ref(db,"users/"+id),
-{
-status:status,
-updatedAt:Date.now()
-}
-);
-
-showSuccess(
-status==="approved"
-?"Technician approved successfully."
-:"Application rejected."
-);
-
-}catch(e){
-
-showError(e.message);
-
-}
-
-};
 
 function esc(v){
 
@@ -423,6 +535,650 @@ m=>({
 );
 
 }
+
+
+function badge(status){
+
+const s=String(status||"unknown");
+
+return `
+<span class="badge status-${esc(s)}">
+${esc(s.replace("_"," "))}
+</span>
+`;
+
+}
+
+
+/* LOGOUT */
+
+$("logout").onclick=async()=>{
+
+try{
+
+await signOut(auth);
+
+location.href="../login.html";
+
+}catch(e){
+
+showError(e.message);
+
+}
+
+};
+
+
+/* AUTHENTICATION */
+
+onAuthStateChanged(auth,user=>{
+
+if(!user){
+
+location.href="../login.html";
+
+return;
+
+}
+
+onValue(
+ref(db,"users/"+user.uid),
+snap=>{
+
+const u=snap.val();
+
+if(!u){
+
+showError(
+"No CEO profile was found for this account."
+);
+
+return;
+
+}
+
+const role=String(
+u.role??""
+).trim().toLowerCase();
+
+if(role!=="admin"){
+
+showError(
+"Access denied. This account is not an admin."
+);
+
+return;
+
+}
+
+showSuccess(
+"CEO access verified. Welcome "+
+(u.fullName||"CEO")+"!"
+);
+
+loadData();
+
+},
+error=>{
+
+showError(
+"Could not read CEO profile: "+
+error.message
+);
+
+}
+);
+
+});
+
+
+/* LOAD USERS */
+
+function loadData(){
+
+onValue(
+ref(db,"users"),
+snap=>{
+
+allUsers=snap.val()||{};
+
+renderUsers();
+
+},
+error=>{
+
+showError(
+"Could not load users: "+
+error.message
+);
+
+}
+);
+
+
+/* LOAD JOBS */
+
+onValue(
+ref(db,"jobs"),
+snap=>{
+
+allJobs=snap.val()||{};
+
+renderJobs();
+
+},
+error=>{
+
+showError(
+"Could not load jobs: "+
+error.message
+);
+
+}
+);
+
+}
+
+
+/* RENDER USERS */
+
+function renderUsers(){
+
+const arr=Object.entries(allUsers);
+
+const customers=arr.filter(
+x=>x[1] &&
+x[1].role==="customer"
+);
+
+const techs=arr.filter(
+x=>x[1] &&
+x[1].role==="technician"
+);
+
+const pending=techs.filter(
+x=>x[1].status==="pending"
+);
+
+
+/* STATS */
+
+$("customers").textContent=customers.length;
+
+$("technicians").textContent=techs.length;
+
+$("pendingTech").textContent=pending.length;
+
+
+/* TECHNICIANS */
+
+let search=(
+$("techSearch").value||""
+).toLowerCase();
+
+let filtered=techs.filter(([id,u])=>{
+
+const matchesFilter=
+techFilter==="all" ||
+String(u.status||"")===techFilter;
+
+const text=(
+(u.fullName||"")+" "+
+(u.phone||"")+" "+
+(u.service||"")+" "+
+(u.city||"")
+).toLowerCase();
+
+return matchesFilter &&
+text.includes(search);
+
+});
+
+
+$("techniciansList").innerHTML=
+
+filtered.length?
+
+filtered.map(([id,u])=>`
+
+<div class="item">
+
+<strong>
+${esc(u.fullName||"Unknown Technician")}
+</strong>
+
+<div class="meta">
+
+📞 ${esc(u.phone||"—")}<br>
+
+📧 ${esc(u.email||"—")}<br>
+
+🔧 ${esc(u.service||"—")}<br>
+
+📍 ${esc(u.city||"—")}<br>
+
+⭐ Experience:
+${esc(u.experience||"0")} years<br>
+
+📊 Jobs Completed:
+${esc(u.jobsCompleted||0)}<br>
+
+💰 Earnings:
+K${Number(u.totalEarnings||0).toFixed(2)}
+
+</div>
+
+${badge(u.status||"pending")}
+
+${u.availability?
+`<div class="meta">
+🟢 Availability: ${esc(u.availability)}
+</div>`:""}
+
+<div>
+
+${
+u.status==="pending"
+?
+`
+<button
+class="approve"
+onclick="changeTech('${id}','approved')">
+✓ Approve
+</button>
+
+<button
+class="reject"
+onclick="changeTech('${id}','rejected')">
+✕ Reject
+</button>
+`
+:""
+}
+
+${
+u.status==="approved"
+?
+`
+<button
+class="suspend"
+onclick="changeTech('${id}','suspended')">
+Suspend
+</button>
+`
+:""
+}
+
+${
+u.status==="suspended"
+?
+`
+<button
+class="activate"
+onclick="changeTech('${id}','approved')">
+Reactivate
+</button>
+`
+:""
+}
+
+</div>
+
+</div>
+
+`).join("")
+
+:
+
+`
+<div class="empty">
+No technicians found.
+</div>
+`;
+
+
+/* CUSTOMERS */
+
+let customerSearch=(
+$("customerSearch").value||""
+).toLowerCase();
+
+let filteredCustomers=customers.filter(
+([id,u])=>{
+
+const text=(
+(u.fullName||"")+" "+
+(u.phone||"")+" "+
+(u.city||"")+" "+
+(u.email||"")
+).toLowerCase();
+
+return text.includes(customerSearch);
+
+}
+);
+
+
+$("customersList").innerHTML=
+
+filteredCustomers.length?
+
+filteredCustomers
+.slice(0,50)
+.map(([id,u])=>`
+
+<div class="item">
+
+<strong>
+${esc(u.fullName||"Customer")}
+</strong>
+
+<div class="meta">
+
+📞 ${esc(u.phone||"—")}<br>
+
+📧 ${esc(u.email||"—")}<br>
+
+📍 ${esc(u.city||"—")}
+
+</div>
+
+${badge(u.status||"active")}
+
+</div>
+
+`).join("")
+
+:
+
+`
+<div class="empty">
+No customers found.
+</div>
+`;
+
+}
+
+
+/* RENDER JOBS */
+
+function renderJobs(){
+
+const arr=Object.entries(allJobs);
+
+$("totalJobs").textContent=arr.length;
+
+
+const active=arr.filter(
+x=>["accepted","in_progress"]
+.includes(x[1].status)
+).length;
+
+const completed=arr.filter(
+x=>x[1].status==="completed"
+).length;
+
+
+$("activeJobs").textContent=active;
+
+$("completedJobs").textContent=completed;
+
+
+let totalCommission=0;
+
+let totalValue=0;
+
+arr.forEach(([id,j])=>{
+
+totalCommission+=
+Number(j.platformCommission||0);
+
+totalValue+=
+Number(j.estimatedPrice||0);
+
+});
+
+
+$("commission").textContent=
+"K"+totalCommission.toFixed(2);
+
+$("jobValue").textContent=
+"K"+totalValue.toFixed(2);
+
+
+/* SEARCH */
+
+let search=(
+$("jobSearch").value||""
+).toLowerCase();
+
+
+let filtered=arr.filter(([id,j])=>{
+
+const matchesFilter=
+jobFilter==="all" ||
+String(j.status||"pending")===jobFilter;
+
+const text=(
+(j.service||"")+" "+
+(j.customerName||"")+" "+
+(j.technicianName||"")+" "+
+(j.city||"")+" "+
+(j.location||"")
+).toLowerCase();
+
+return matchesFilter &&
+text.includes(search);
+
+});
+
+
+/* NEWEST FIRST */
+
+filtered.sort(
+(a,b)=>
+Number(b[1].createdAt||0)-
+Number(a[1].createdAt||0)
+);
+
+
+$("jobsList").innerHTML=
+
+filtered.length?
+
+filtered
+.slice(0,50)
+.map(([id,j])=>`
+
+<div class="item job">
+
+<strong>
+${esc(j.service||"Service Request")}
+</strong>
+
+<div class="meta">
+
+👤 Customer:
+${esc(j.customerName||"—")}<br>
+
+📞 Customer Phone:
+${esc(j.customerPhone||"—")}<br>
+
+👷 Technician:
+${esc(j.technicianName||"Not assigned")}<br>
+
+📍 Location:
+${esc(j.location||"—")}<br>
+
+🏙️ City:
+${esc(j.city||"—")}<br>
+
+🚨 Urgency:
+${esc(j.urgency||"normal")}<br>
+
+💰 Estimated Price:
+<span class="money">
+K${Number(j.estimatedPrice||0).toFixed(2)}
+</span><br>
+
+💼 Platform Commission:
+<span class="money">
+K${Number(j.platformCommission||0).toFixed(2)}
+</span><br>
+
+👷 Technician Amount:
+K${Number(j.technicianAmount||0).toFixed(2)}
+
+</div>
+
+${badge(j.status||"pending")}
+
+</div>
+
+`).join("")
+
+:
+
+`
+<div class="empty">
+No jobs found.
+</div>
+`;
+
+}
+
+
+/* TECHNICIAN STATUS */
+
+window.changeTech=async(id,status)=>{
+
+const action=
+status==="approved"
+?"approve"
+:
+status==="rejected"
+?"reject"
+:
+status==="suspended"
+?"suspend"
+:"update";
+
+
+if(
+!confirm(
+"Are you sure you want to "+
+action+
+" this technician?"
+)
+)return;
+
+
+try{
+
+await update(
+ref(db,"users/"+id),
+{
+status:status,
+updatedAt:Date.now()
+}
+);
+
+
+showSuccess(
+status==="approved"
+?
+"Technician approved successfully."
+:
+status==="rejected"
+?
+"Technician application rejected."
+:
+status==="suspended"
+?
+"Technician suspended."
+:
+"Technician updated."
+);
+
+
+}catch(e){
+
+showError(
+"Could not update technician: "+
+e.message
+);
+
+}
+
+};
+
+
+/* TECHNICIAN FILTERS */
+
+document.querySelectorAll(
+"[data-filter]"
+).forEach(btn=>{
+
+btn.onclick=()=>{
+
+document.querySelectorAll(
+"[data-filter]"
+).forEach(b=>
+b.classList.remove("active")
+);
+
+btn.classList.add("active");
+
+techFilter=btn.dataset.filter;
+
+renderUsers();
+
+};
+
+});
+
+
+/* JOB FILTERS */
+
+document.querySelectorAll(
+"[data-job-filter]"
+).forEach(btn=>{
+
+btn.onclick=()=>{
+
+document.querySelectorAll(
+"[data-job-filter]"
+).forEach(b=>
+b.classList.remove("active")
+);
+
+btn.classList.add("active");
+
+jobFilter=btn.dataset.jobFilter;
+
+renderJobs();
+
+};
+
+});
+
+
+/* SEARCH */
+
+$("techSearch").addEventListener(
+"input",
+renderUsers
+);
+
+$("customerSearch").addEventListener(
+"input",
+renderUsers
+);
+
+$("jobSearch").addEventListener(
+"input",
+renderJobs
+);
 
 </script>
 
