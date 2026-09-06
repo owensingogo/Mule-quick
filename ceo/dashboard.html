@@ -3,25 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Mule QuickFix | CEO Dashboard</title>
+<title>Mule QuickFix | CEO</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f4f7fb;color:#172033;font-family:Arial,sans-serif}
 header{background:#0b5cff;color:#fff;padding:14px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:5}
-.logo{font-weight:900;font-size:16px}.admin{font-size:10px;background:#ffffff22;padding:6px;border-radius:15px}
-.logout{border:0;border-radius:7px;padding:7px 9px;color:#0b5cff;font-weight:bold}
-main{max-width:950px;margin:auto;padding:14px}h2{margin:4px 0;font-size:21px}.sub{font-size:12px;color:#667085;margin-bottom:14px}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.card{background:#fff;border-radius:14px;padding:13px;margin-bottom:12px;box-shadow:0 3px 12px #0000000b}
-.stat span{font-size:11px;color:#667085}.stat b{display:block;font-size:22px;margin-top:5px}
+.logo{font-weight:900}.admin{font-size:10px;background:#ffffff22;padding:6px;border-radius:15px}
+button{border:0;border-radius:7px;padding:8px 10px;font-weight:bold;cursor:pointer}.logout{color:#0b5cff}
+main{max-width:950px;margin:auto;padding:14px}h2{margin:3px 0;font-size:21px}.sub{font-size:12px;color:#667085;margin-bottom:14px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.card{background:#fff;border-radius:14px;padding:13px;margin-bottom:12px;box-shadow:0 3px 12px #0001}
+.stat span{font-size:11px;color:#667085}.stat b{display:block;font-size:21px;margin-top:5px}
 .blue{color:#0b5cff}.green{color:#16a34a}.orange{color:#f59e0b}.red{color:#dc2626}
 h3{font-size:15px;margin:0 0 10px}input,select{width:100%;padding:10px;border:1px solid #d8dee8;border-radius:8px;margin:4px 0;font-size:13px}
-button{border:0;border-radius:7px;padding:8px 10px;font-weight:bold;margin:4px 3px 0 0;cursor:pointer}
 .save,.approve{background:#16a34a;color:#fff}.reject{background:#fee2e2;color:#b91c1c}.suspend{background:#fff3cd;color:#8a5a00}.activate{background:#dbeafe;color:#175cd3}
-.item{border:1px solid #e5e9ef;border-radius:10px;padding:10px;margin:7px 0}.item strong{font-size:13px}.meta{font-size:11px;color:#667085;line-height:1.65;margin-top:4px}
+.price{background:#eff6ff;color:#175cd3}.item{border:1px solid #e5e9ef;border-radius:10px;padding:10px;margin:7px 0}
+.item strong{font-size:13px}.meta{font-size:11px;color:#667085;line-height:1.7;margin-top:4px}
 .badge{display:inline-block;background:#eef2ff;color:#3949ab;padding:4px 7px;border-radius:15px;font-size:9px;font-weight:bold;margin-top:5px}
-.empty,.loading{text-align:center;color:#667085;font-size:12px;padding:13px}
-.error,.success{display:none;padding:11px;border-radius:10px;font-size:12px;margin-bottom:10px}.error{background:#fee2e2;color:#991b1b}.success{background:#dcfce7;color:#166534}
 .money{background:#f8fafc;border-radius:9px;padding:9px;margin-top:7px;font-size:12px;line-height:1.8}
 .tabs{display:flex;gap:5px;overflow:auto;margin-bottom:8px}.tab{background:#eef2f7;color:#475467;white-space:nowrap}.tab.active{background:#0b5cff;color:#fff}
+.empty,.loading{text-align:center;color:#667085;font-size:12px;padding:13px}
+.error,.success{display:none;padding:10px;border-radius:9px;font-size:12px;margin-bottom:10px}.error{background:#fee2e2;color:#991b1b}.success{background:#dcfce7;color:#166534}
 @media(min-width:650px){.grid{grid-template-columns:repeat(4,1fr)}}
 </style>
 </head>
@@ -30,7 +30,7 @@ button{border:0;border-radius:7px;padding:8px 10px;font-weight:bold;margin:4px 3
 
 <header>
 <div class="logo">🔧 MULE QUICKFIX</div>
-<div><span class="admin">CEO / ADMIN</span><button class="logout" id="logout">Logout</button></div>
+<div><span class="admin">CEO</span> <button class="logout" id="logout">Logout</button></div>
 </header>
 
 <main>
@@ -39,7 +39,7 @@ button{border:0;border-radius:7px;padding:8px 10px;font-weight:bold;margin:4px 3
 <div id="success" class="success"></div>
 
 <h2>CEO Dashboard 👋</h2>
-<div class="sub">Manage your platform, technicians, jobs and revenue.</div>
+<div class="sub">Manage technicians, customers, jobs and revenue.</div>
 
 <div class="grid">
 <div class="card stat"><span>Customers</span><b class="blue" id="customers">0</b></div>
@@ -52,65 +52,32 @@ button{border:0;border-radius:7px;padding:8px 10px;font-weight:bold;margin:4px 3
 <div class="card stat"><span>QuickFix Revenue</span><b class="green" id="revenue">K0</b></div>
 </div>
 
-<!-- COMMISSION -->
-
 <div class="card">
 <h3>💰 Commission Settings</h3>
-
-<label>Type</label>
 <select id="comType">
 <option value="percentage">Percentage (%)</option>
 <option value="fixed">Fixed Amount (K)</option>
 </select>
-
-<label>Value</label>
-<input id="comValue" type="number" min="0" step=".01" placeholder="Example: 15">
-
+<input id="comValue" type="number" min="0" placeholder="Example: 15">
 <button class="save" id="saveCom">💾 Save Commission</button>
-
 <div class="money" id="currentCom">Loading...</div>
 </div>
 
-<!-- CALCULATOR -->
-
-<div class="card">
-<h3>🧮 Money Calculator</h3>
-
-<input id="price" type="number" min="0" step=".01" placeholder="Enter job price, e.g. 200">
-
-<button class="approve" id="calculate">Calculate</button>
-
-<div class="money" id="result" style="display:none">
-Customer: <b id="rPrice">K0</b><br>
-Mule QuickFix: <b id="rCom">K0</b><br>
-Technician: <b id="rTech">K0</b>
-</div>
-</div>
-
-<!-- TECHNICIANS -->
-
 <div class="card">
 <h3>👷 Technicians</h3>
-
 <input id="techSearch" placeholder="Search technician...">
-
 <div class="tabs">
 <button class="tab active" data-filter="pending">Pending</button>
 <button class="tab" data-filter="approved">Approved</button>
 <button class="tab" data-filter="suspended">Suspended</button>
 <button class="tab" data-filter="all">All</button>
 </div>
-
 <div id="techList"><div class="loading">Loading...</div></div>
 </div>
 
-<!-- JOBS -->
-
 <div class="card">
-<h3>🛠️ Jobs</h3>
-
+<h3>🛠️ Jobs & Pricing</h3>
 <input id="jobSearch" placeholder="Search jobs...">
-
 <div class="tabs">
 <button class="tab active" data-job="all">All</button>
 <button class="tab" data-job="pending">Pending</button>
@@ -118,11 +85,8 @@ Technician: <b id="rTech">K0</b>
 <button class="tab" data-job="in_progress">Progress</button>
 <button class="tab" data-job="completed">Completed</button>
 </div>
-
 <div id="jobList"><div class="loading">Loading...</div></div>
 </div>
-
-<!-- CUSTOMERS -->
 
 <div class="card">
 <h3>👥 Customers</h3>
@@ -138,14 +102,13 @@ import{auth,db}from"../js/firebase.js";
 import{onAuthStateChanged,signOut}from"https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 import{ref,onValue,update,set}from"https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
 
-const $=x=>document.getElementById(x);
+const $=id=>document.getElementById(id);
 let users={},jobs={},techFilter="pending",jobFilter="all";
 let commission={type:"percentage",value:15};
 
 function msg(id,text){
-$(id).textContent=text;
-$(id).style.display="block";
-setTimeout(()=>$(id).style.display="none",4000);
+$(id).textContent=text;$(id).style.display="block";
+setTimeout(()=>$(id).style.display="none",3500);
 }
 
 function esc(v){
@@ -153,34 +116,28 @@ return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'
 }
 
 $("logout").onclick=async()=>{
-await signOut(auth);
-location.href="../login.html";
+await signOut(auth);location.href="../login.html";
 };
 
 onAuthStateChanged(auth,u=>{
 if(!u){location.href="../login.html";return}
 onValue(ref(db,"users/"+u.uid),s=>{
 let x=s.val();
-if(!x||String(x.role).toLowerCase()!=="admin"){
-msg("error","Access denied. This account is not an admin.");
-return;
+if(!x||x.role!=="admin"){
+msg("error","Access denied.");return;
 }
-msg("success","CEO access verified. Welcome "+(x.fullName||"CEO")+"!");
-load();
-loadCommission();
-},e=>msg("error","Could not read CEO profile: "+e.message));
+load();loadCommission();
+},e=>msg("error",e.message));
 });
 
 function load(){
 
 onValue(ref(db,"users"),s=>{
-users=s.val()||{};
-renderUsers();
+users=s.val()||{};renderUsers();
 },e=>msg("error","Could not load users: "+e.message));
 
 onValue(ref(db,"jobs"),s=>{
-jobs=s.val()||{};
-renderJobs();
+jobs=s.val()||{};renderJobs();
 },e=>msg("error","Could not load jobs: "+e.message));
 
 }
@@ -189,59 +146,35 @@ function loadCommission(){
 
 onValue(ref(db,"settings/commission"),s=>{
 let x=s.val();
-
-if(x)commission={
-type:x.type||"percentage",
-value:Number(x.value||0)
-};
-
+if(x)commission={type:x.type||"percentage",value:Number(x.value||0)};
 $("comType").value=commission.type;
 $("comValue").value=commission.value;
-
-$("currentCom").innerHTML=
-commission.type==="percentage"
+$("currentCom").innerHTML=commission.type==="percentage"
 ?"Current: <b>"+commission.value+"%</b>"
 :"Current: <b>K"+commission.value.toFixed(2)+"</b>";
-
 });
 
 }
 
 $("saveCom").onclick=async()=>{
 
-let type=$("comType").value;
-let value=Number($("comValue").value);
+let type=$("comType").value,value=Number($("comValue").value);
 
-if(value<0||!Number.isFinite(value)){
-msg("error","Enter a valid commission.");
-return;
-}
-
-if(type==="percentage"&&value>100){
-msg("error","Percentage cannot exceed 100%.");
-return;
+if(!Number.isFinite(value)||value<0||(type==="percentage"&&value>100)){
+msg("error","Enter a valid commission.");return;
 }
 
 try{
-
 await set(ref(db,"settings/commission"),{
-type,
-value,
-updatedAt:Date.now(),
-updatedBy:auth.currentUser.uid
+type,value,updatedAt:Date.now(),updatedBy:auth.currentUser.uid
 });
-
 commission={type,value};
-
-msg("success","Commission settings saved.");
-
-}catch(e){
-msg("error","Could not save commission: "+e.message);
-}
+msg("success","Commission saved.");
+}catch(e){msg("error",e.message)}
 
 };
 
-function money(price){
+function calc(price){
 
 price=Number(price)||0;
 
@@ -249,30 +182,15 @@ let c=commission.type==="percentage"
 ?price*commission.value/100
 :Math.min(price,commission.value);
 
-return{
-price,
-commission:c,
-technician:price-c
-};
+return{price,commission:c,technician:price-c};
 
 }
 
-$("calculate").onclick=()=>{
-
-let r=money($("price").value);
-
-$("rPrice").textContent="K"+r.price.toFixed(2);
-$("rCom").textContent="K"+r.commission.toFixed(2);
-$("rTech").textContent="K"+r.technician.toFixed(2);
-$("result").style.display="block";
-
-};
-
 function renderUsers(){
 
-let a=Object.entries(users);
-let customers=a.filter(x=>x[1].role==="customer");
-let techs=a.filter(x=>x[1].role==="technician");
+let all=Object.entries(users);
+let customers=all.filter(x=>x[1].role==="customer");
+let techs=all.filter(x=>x[1].role==="technician");
 
 $("customers").textContent=customers.length;
 $("technicians").textContent=techs.length;
@@ -280,12 +198,12 @@ $("pending").textContent=techs.filter(x=>x[1].status==="pending").length;
 
 let q=$("techSearch").value.toLowerCase();
 
-let t=techs.filter(([id,u])=>{
+let list=techs.filter(([id,u])=>{
 let text=(u.fullName+" "+u.phone+" "+u.service+" "+u.city).toLowerCase();
 return(techFilter==="all"||u.status===techFilter)&&text.includes(q);
 });
 
-$("techList").innerHTML=t.length?t.map(([id,u])=>`
+$("techList").innerHTML=list.length?list.map(([id,u])=>`
 
 <div class="item">
 <strong>${esc(u.fullName||"Technician")}</strong>
@@ -312,15 +230,18 @@ ${u.status==="suspended"?`
 
 let cq=$("customerSearch").value.toLowerCase();
 
-let c=customers.filter(([id,u])=>
+let cs=customers.filter(([id,u])=>
 (u.fullName+" "+u.phone+" "+u.city).toLowerCase().includes(cq)
 );
 
-$("customerList").innerHTML=c.length?c.slice(0,50).map(([id,u])=>`
+$("customerList").innerHTML=cs.length?cs.slice(0,50).map(([id,u])=>`
 
 <div class="item">
 <strong>${esc(u.fullName||"Customer")}</strong>
-<div class="meta">📞 ${esc(u.phone||"—")}<br>📍 ${esc(u.city||"—")}</div>
+<div class="meta">
+📞 ${esc(u.phone||"—")}<br>
+📍 ${esc(u.city||"—")}
+</div>
 <span class="badge">${esc(u.status||"active")}</span>
 </div>
 
@@ -330,19 +251,15 @@ $("customerList").innerHTML=c.length?c.slice(0,50).map(([id,u])=>`
 
 function renderJobs(){
 
-let a=Object.entries(jobs);
+let all=Object.entries(jobs);
 
-$("totalJobs").textContent=a.length;
-
-$("active").textContent=a.filter(x=>
-["accepted","in_progress"].includes(x[1].status)).length;
-
-$("completed").textContent=a.filter(x=>
-x[1].status==="completed").length;
+$("totalJobs").textContent=all.length;
+$("active").textContent=all.filter(x=>["accepted","in_progress"].includes(x[1].status)).length;
+$("completed").textContent=all.filter(x=>x[1].status==="completed").length;
 
 let value=0,revenue=0;
 
-a.forEach(([id,j])=>{
+all.forEach(([id,j])=>{
 value+=Number(j.estimatedPrice||0);
 revenue+=Number(j.platformCommission||0);
 });
@@ -352,24 +269,18 @@ $("revenue").textContent="K"+revenue.toFixed(2);
 
 let q=$("jobSearch").value.toLowerCase();
 
-let list=a.filter(([id,j])=>{
+let list=all.filter(([id,j])=>{
 let text=(j.service+" "+j.customerName+" "+j.technicianName+" "+j.city).toLowerCase();
 return(jobFilter==="all"||j.status===jobFilter)&&text.includes(q);
 });
 
-list.sort((a,b)=>
-Number(b[1].createdAt||0)-Number(a[1].createdAt||0)
-);
+list.sort((a,b)=>Number(b[1].createdAt||0)-Number(a[1].createdAt||0));
 
 $("jobList").innerHTML=list.length?list.slice(0,50).map(([id,j])=>{
 
-let r=money(j.estimatedPrice);
-
+let price=Number(j.estimatedPrice||0);
 let c=Number(j.platformCommission||0);
 let t=Number(j.technicianAmount||0);
-
-if(!c&&j.estimatedPrice)c=r.commission;
-if(!t&&j.estimatedPrice)t=r.technician;
 
 return`
 
@@ -385,15 +296,21 @@ return`
 </div>
 
 <div class="money">
-Job Price: <b>K${Number(j.estimatedPrice||0).toFixed(2)}</b><br>
+Job Price: <b>K${price.toFixed(2)}</b><br>
 Mule QuickFix: <b>K${c.toFixed(2)}</b><br>
 Technician: <b>K${t.toFixed(2)}</b>
 </div>
 
 <span class="badge">${esc(j.status||"pending")}</span>
 
-${j.status==="completed"&&Number(j.estimatedPrice)>0?`
-<br><button class="approve" onclick="applyMoney('${id}')">
+<br>
+
+<button class="price" onclick="setPrice('${id}')">
+💵 ${price>0?"Change Price":"Set Price"}
+</button>
+
+${price>0?`
+<button class="approve" onclick="applyMoney('${id}')">
 💰 Apply Commission
 </button>`:""}
 
@@ -405,21 +322,41 @@ ${j.status==="completed"&&Number(j.estimatedPrice)>0?`
 
 }
 
-window.tech=async(id,status)=>{
+window.setPrice=async id=>{
 
-if(!confirm("Change technician status to "+status+"?"))return;
+let j=jobs[id];
+if(!j)return;
+
+let old=Number(j.estimatedPrice||0);
+
+let input=prompt(
+"Enter final price for this job in Kwacha:",
+old>0?old:""
+);
+
+if(input===null)return;
+
+let price=Number(input);
+
+if(!Number.isFinite(price)||price<=0){
+msg("error","Enter a valid price greater than K0.");
+return;
+}
 
 try{
 
-await update(ref(db,"users/"+id),{
-status,
+await update(ref(db,"jobs/"+id),{
+estimatedPrice:Number(price.toFixed(2)),
+platformCommission:0,
+technicianAmount:0,
+paymentStatus:"unpaid",
 updatedAt:Date.now()
 });
 
-msg("success","Technician status updated.");
+msg("success","Job price set to K"+price.toFixed(2));
 
 }catch(e){
-msg("error",e.message);
+msg("error","Could not set price: "+e.message);
 }
 
 };
@@ -427,22 +364,22 @@ msg("error",e.message);
 window.applyMoney=async id=>{
 
 let j=jobs[id];
-
 if(!j)return;
 
 let price=Number(j.estimatedPrice||0);
 
 if(price<=0){
-msg("error","This job has no valid price.");
+msg("error","Set the job price first.");
 return;
 }
 
-let r=money(price);
+let r=calc(price);
 
 if(!confirm(
-"Commission K"+r.commission.toFixed(2)+
-"\nTechnician K"+r.technician.toFixed(2)+
-"\n\nApply these amounts?"
+"Job: K"+r.price.toFixed(2)+
+"\nMule QuickFix: K"+r.commission.toFixed(2)+
+"\nTechnician: K"+r.technician.toFixed(2)+
+"\n\nApply commission?"
 ))return;
 
 try{
@@ -462,6 +399,22 @@ msg("success","Commission applied successfully.");
 }catch(e){
 msg("error",e.message);
 }
+
+};
+
+window.tech=async(id,status)=>{
+
+if(!confirm("Change technician status to "+status+"?"))return;
+
+try{
+
+await update(ref(db,"users/"+id),{
+status,updatedAt:Date.now()
+});
+
+msg("success","Technician updated.");
+
+}catch(e){msg("error",e.message)}
 
 };
 
