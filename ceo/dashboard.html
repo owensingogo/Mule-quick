@@ -30,7 +30,8 @@ button{border:0;border-radius:8px;padding:9px 12px;font-weight:700;cursor:pointe
 .empty{text-align:center;color:#667085;padding:15px;font-size:13px}
 .badge{display:inline-block;padding:5px 8px;border-radius:20px;font-size:10px;font-weight:bold;background:#eef2ff;color:#3949ab}
 .job{border-left:4px solid #0b5cff}
-.error{background:#fee2e2;color:#991b1b;border-radius:12px;padding:14px;margin-bottom:14px;font-size:13px;display:none}
+.error{background:#fee2e2;color:#991b1b;border-radius:12px;padding:14px;margin-bottom:14px;font-size:13px;display:none;word-break:break-word}
+.success{background:#dcfce7;color:#166534;border-radius:12px;padding:14px;margin-bottom:14px;font-size:13px;display:none}
 @media(min-width:650px){.grid{grid-template-columns:repeat(3,1fr)}}
 </style>
 </head>
@@ -48,6 +49,7 @@ button{border:0;border-radius:8px;padding:9px 12px;font-weight:700;cursor:pointe
 <main>
 
 <div id="error" class="error"></div>
+<div id="success" class="success"></div>
 
 <h2>CEO Dashboard 👋</h2>
 <div class="sub">Manage customers, technicians, jobs and platform revenue.</div>
@@ -62,18 +64,30 @@ button{border:0;border-radius:8px;padding:9px 12px;font-weight:700;cursor:pointe
 </div>
 
 <div class="card">
-<div class="section-title"><h3>👷 Technician Applications</h3></div>
-<div id="techniciansList"><div class="empty">Loading...</div></div>
+<div class="section-title">
+<h3>👷 Technician Applications</h3>
+</div>
+<div id="techniciansList">
+<div class="empty">Loading...</div>
+</div>
 </div>
 
 <div class="card">
-<div class="section-title"><h3>🛠️ All Jobs</h3></div>
-<div id="jobsList"><div class="empty">Loading...</div></div>
+<div class="section-title">
+<h3>🛠️ All Jobs</h3>
+</div>
+<div id="jobsList">
+<div class="empty">Loading...</div>
+</div>
 </div>
 
 <div class="card">
-<div class="section-title"><h3>👥 Customers</h3></div>
-<div id="customersList"><div class="empty">Loading...</div></div>
+<div class="section-title">
+<h3>👥 Customers</h3>
+</div>
+<div id="customersList">
+<div class="empty">Loading...</div>
+</div>
 </div>
 
 </main>
@@ -81,238 +95,336 @@ button{border:0;border-radius:8px;padding:9px 12px;font-weight:700;cursor:pointe
 <script type="module">
 
 import{auth,db}from"../js/firebase.js";
-import{onAuthStateChanged,signOut}from"https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-import{ref,onValue,update}from"https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+
+import{
+onAuthStateChanged,
+signOut
+}from"https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+import{
+ref,
+onValue,
+update
+}from"https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
 
 const $=id=>document.getElementById(id);
 
 function showError(msg){
- const e=$("error");
- e.textContent="⚠️ "+msg;
- e.style.display="block";
+const e=$("error");
+e.textContent="⚠️ "+msg;
+e.style.display="block";
 }
 
-$("logout").onclick=()=>{
- signOut(auth).then(()=>{
-  location.href="../login.html";
- }).catch(e=>showError(e.message));
+function showSuccess(msg){
+const e=$("success");
+e.textContent="✅ "+msg;
+e.style.display="block";
+}
+
+$("logout").onclick=async()=>{
+try{
+await signOut(auth);
+location.href="../login.html";
+}catch(e){
+showError(e.message);
+}
 };
 
 onAuthStateChanged(auth,user=>{
 
- if(!user){
-  location.href="../login.html";
-  return;
- }
+if(!user){
+location.href="../login.html";
+return;
+}
 
- onValue(ref(db,"users/"+user.uid),snap=>{
+console.log("Logged in UID:",user.uid);
+console.log("Logged in Email:",user.email);
 
-  const u=snap.val();
+onValue(
+ref(db,"users/"+user.uid),
+snap=>{
 
-  if(!u){
-   showError("Your Firebase account has no user profile in the database.");
-   return;
-  }
+const u=snap.val();
 
-  if(u.role!=="admin"){
-   showError("Access denied. This account is not an admin account.");
-   return;
-  }
+console.log("CEO USER DATA:",u);
 
-  loadData();
+if(!u){
 
- },error=>{
-  showError("Could not read your user profile: "+error.message);
- });
+showError(
+"No user profile was found in Firebase for UID: "+
+user.uid
+);
+
+return;
+}
+
+const role=String(u.role??"").trim().toLowerCase();
+
+if(role!=="admin"){
+
+showError(
+"Access denied. Firebase sees role as ["+
+String(u.role)+
+"] for UID: "+
+user.uid
+);
+
+return;
+}
+
+showSuccess(
+"CEO access verified successfully. Welcome "+
+(u.fullName||"CEO")+"!"
+);
+
+loadData();
+
+},
+error=>{
+
+showError(
+"Could not read your CEO profile: "+
+error.message
+);
+
+}
+);
 
 });
 
 function loadData(){
 
- onValue(ref(db,"users"),snap=>{
+onValue(
+ref(db,"users"),
+snap=>{
 
-  const users=snap.val()||{};
-  const arr=Object.entries(users);
+const users=snap.val()||{};
+const arr=Object.entries(users);
 
-  const customers=arr.filter(x=>x[1].role==="customer");
-  const techs=arr.filter(x=>x[1].role==="technician");
-  const pending=techs.filter(x=>x[1].status==="pending");
+const customers=arr.filter(
+x=>x[1].role==="customer"
+);
 
-  $("customers").textContent=customers.length;
-  $("technicians").textContent=techs.length;
-  $("pendingTech").textContent=pending.length;
+const techs=arr.filter(
+x=>x[1].role==="technician"
+);
 
-  $("techniciansList").innerHTML=pending.length?
+const pending=techs.filter(
+x=>x[1].status==="pending"
+);
 
-  pending.map(([id,u])=>`
+$("customers").textContent=customers.length;
+$("technicians").textContent=techs.length;
+$("pendingTech").textContent=pending.length;
 
-  <div class="item">
+$("techniciansList").innerHTML=
 
-  <strong>${esc(u.fullName||"Unknown")}</strong>
+pending.length?
 
-  <div class="meta">
-  📞 ${esc(u.phone||"—")}<br>
-  🔧 ${esc(u.service||"—")}<br>
-  📍 ${esc(u.city||"—")}<br>
-  ⭐ Experience: ${esc(u.experience||"0")} years
-  </div>
+pending.map(([id,u])=>`
 
-  <button class="approve"
-  onclick="changeTech('${id}','approved')">
-  Approve
-  </button>
+<div class="item">
 
-  <button class="reject"
-  onclick="changeTech('${id}','rejected')">
-  Reject
-  </button>
+<strong>${esc(u.fullName||"Unknown")}</strong>
 
-  </div>
+<div class="meta">
+📞 ${esc(u.phone||"—")}<br>
+🔧 ${esc(u.service||"—")}<br>
+📍 ${esc(u.city||"—")}<br>
+⭐ Experience: ${esc(u.experience||"0")} years
+</div>
 
-  `).join("")
+<button
+class="approve"
+onclick="changeTech('${id}','approved')">
+Approve
+</button>
 
-  :
+<button
+class="reject"
+onclick="changeTech('${id}','rejected')">
+Reject
+</button>
 
-  `<div class="empty">No pending technician applications.</div>`;
+</div>
 
-  $("customersList").innerHTML=customers.length?
+`).join("")
 
-  customers.slice(0,20).map(([id,u])=>`
+:
 
-  <div class="item">
+`<div class="empty">
+No pending technician applications.
+</div>`;
 
-  <strong>${esc(u.fullName||"Customer")}</strong>
+$("customersList").innerHTML=
 
-  <div class="meta">
-  📞 ${esc(u.phone||"—")} ·
-  📍 ${esc(u.city||"—")}
-  </div>
+customers.length?
 
-  <span class="badge">
-  ${esc(u.status||"active")}
-  </span>
+customers.slice(0,20).map(([id,u])=>`
 
-  </div>
+<div class="item">
 
-  `).join("")
+<strong>${esc(u.fullName||"Customer")}</strong>
 
-  :
+<div class="meta">
+📞 ${esc(u.phone||"—")} ·
+📍 ${esc(u.city||"—")}
+</div>
 
-  `<div class="empty">No customers yet.</div>`;
+<span class="badge">
+${esc(u.status||"active")}
+</span>
 
- },error=>{
-  showError("Could not load users: "+error.message);
- });
+</div>
+
+`).join("")
+
+:
+
+`<div class="empty">
+No customers yet.
+</div>`;
+
+},
+error=>{
+
+showError(
+"Could not load users: "+
+error.message
+);
+
+}
+);
 
 
- onValue(ref(db,"jobs"),snap=>{
+onValue(
+ref(db,"jobs"),
+snap=>{
 
-  const jobs=snap.val()||{};
-  const arr=Object.entries(jobs);
+const jobs=snap.val()||{};
+const arr=Object.entries(jobs);
 
-  $("activeJobs").textContent=
-  arr.filter(x=>["accepted","in_progress"].includes(x[1].status)).length;
+$("activeJobs").textContent=
+arr.filter(x=>
+["accepted","in_progress"].includes(x[1].status)
+).length;
 
-  $("completedJobs").textContent=
-  arr.filter(x=>x[1].status==="completed").length;
+$("completedJobs").textContent=
+arr.filter(x=>
+x[1].status==="completed"
+).length;
 
-  let total=0;
+let total=0;
 
-  arr.forEach(([id,j])=>{
-   total+=Number(j.platformCommission||0);
-  });
+arr.forEach(([id,j])=>{
+total+=Number(j.platformCommission||0);
+});
 
-  $("commission").textContent="K"+total.toFixed(2);
+$("commission").textContent=
+"K"+total.toFixed(2);
 
-  arr.reverse();
+arr.reverse();
 
-  $("jobsList").innerHTML=arr.length?
+$("jobsList").innerHTML=
 
-  arr.slice(0,30).map(([id,j])=>`
+arr.length?
 
-  <div class="item job">
+arr.slice(0,30).map(([id,j])=>`
 
-  <strong>${esc(j.service||"Service Request")}</strong>
+<div class="item job">
 
-  <div class="meta">
+<strong>
+${esc(j.service||"Service Request")}
+</strong>
 
-  👤 Customer:
-  ${esc(j.customerName||"—")}<br>
+<div class="meta">
 
-  👷 Technician:
-  ${esc(j.technicianName||"Not assigned")}<br>
+👤 Customer:
+${esc(j.customerName||"—")}<br>
 
-  📍 ${esc(j.location||"—")},
-  ${esc(j.city||"—")}<br>
+👷 Technician:
+${esc(j.technicianName||"Not assigned")}<br>
 
-  💰 Price:
-  K${Number(j.estimatedPrice||0).toFixed(2)}<br>
+📍 ${esc(j.location||"—")},
+${esc(j.city||"—")}<br>
 
-  💼 Commission:
-  K${Number(j.platformCommission||0).toFixed(2)}
+💰 Price:
+K${Number(j.estimatedPrice||0).toFixed(2)}<br>
 
-  </div>
+💼 Commission:
+K${Number(j.platformCommission||0).toFixed(2)}
 
-  <span class="badge">
-  ${esc(j.status||"pending")}
-  </span>
+</div>
 
-  </div>
+<span class="badge">
+${esc(j.status||"pending")}
+</span>
 
-  `).join("")
+</div>
 
-  :
+`).join("")
 
-  `<div class="empty">No jobs yet.</div>`;
+:
 
- },error=>{
-  showError("Could not load jobs: "+error.message);
- });
+`<div class="empty">
+No jobs yet.
+</div>`;
+
+},
+error=>{
+
+showError(
+"Could not load jobs: "+
+error.message
+);
+
+}
+);
 
 }
 
 window.changeTech=async(id,status)=>{
 
- try{
+try{
 
-  await update(
-   ref(db,"users/"+id),
-   {
-    status:status,
-    updatedAt:Date.now()
-   }
-  );
+await update(
+ref(db,"users/"+id),
+{
+status:status,
+updatedAt:Date.now()
+}
+);
 
-  alert(
-   status==="approved"
-   ?"Technician approved successfully."
-   :"Application rejected."
-  );
+showSuccess(
+status==="approved"
+?"Technician approved successfully."
+:"Application rejected."
+);
 
- }catch(e){
+}catch(e){
 
-  showError(e.message);
+showError(e.message);
 
- }
+}
 
 };
 
 function esc(v){
 
- return String(v??"").replace(
-  /[&<>"']/g,
-  m=>({
-   "&":"&amp;",
-   "<":"&lt;",
-   ">":"&gt;",
-   '"':"&quot;",
-   "'":"&#039;"
-  }[m])
- );
+return String(v??"").replace(
+/[&<>"']/g,
+m=>({
+"&":"&amp;",
+"<":"&lt;",
+">":"&gt;",
+'"':"&quot;",
+"'":"&#039;"
+}[m])
+);
 
 }
 
 </script>
 
 </body>
-  </html>
+ </html>
