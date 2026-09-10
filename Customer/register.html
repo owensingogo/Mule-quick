@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b5cff">
+<title>Join as Technician | Mule QuickFix</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+  font-family:Arial,sans-serif;
+  background:#f4f7fb;
+  color:#172033;
+  min-height:100vh;
+}
+
+.header{
+  background:#0b5cff;
+  color:#fff;
+  padding:20px 18px;
+}
+
+.header-inner{
+  max-width:500px;
+  margin:auto;
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.back{
+  color:#fff;
+  text-decoration:none;
+  font-size:24px;
+}
+
+.logo{
+  font-size:21px;
+  font-weight:800;
+}
+
+.container{
+  max-width:500px;
+  margin:25px auto;
+  padding:0 17px 40px;
+}
+
+.card{
+  background:#fff;
+  border-radius:18px;
+  padding:24px 20px;
+  box-shadow:0 8px 30px rgba(0,0,0,.08);
+}
+
+h1{
+  font-size:25px;
+  margin-bottom:7px;
+}
+
+.intro{
+  color:#687386;
+  font-size:14px;
+  line-height:1.5;
+  margin-bottom:20px;
+}
+
+label{
+  display:block;
+  font-size:14px;
+  font-weight:700;
+  margin:16px 0 7px;
+}
+
+input,
+select{
+  width:100%;
+  padding:14px;
+  border:1px solid #d8dee9;
+  border-radius:11px;
+  background:#fff;
+  font-size:16px;
+  outline:none;
+}
+
+input:focus,
+select:focus{
+  border-color:#0b5cff;
+}
+
+.help{
+  margin-top:6px;
+  color:#687386;
+  font-size:12px;
+  line-height:1.4;
+}
+
+.services{
+  margin-top:9px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+}
+
+.service{
+  border:1px solid #d8dee9;
+  border-radius:10px;
+  padding:11px 8px;
+  font-size:13px;
+  background:#fff;
+}
+
+.service input{
+  width:auto;
+  margin-right:6px;
+}
+
+.submit{
+  width:100%;
+  border:0;
+  padding:16px;
+  border-radius:12px;
+  background:#0b5cff;
+  color:#fff;
+  font-size:16px;
+  font-weight:800;
+  margin-top:23px;
+  cursor:pointer;
+}
+
+.submit:disabled{
+  opacity:.6;
+}
+
+.message{
+  display:none;
+  margin-top:15px;
+  padding:13px;
+  border-radius:10px;
+  font-size:14px;
+  line-height:1.5;
+}
+
+.success{
+  background:#e9f8ef;
+  color:#176b39;
+}
+
+.error{
+  background:#fdecec;
+  color:#a52323;
+}
+
+.login{
+  text-align:center;
+  margin-top:19px;
+  font-size:14px;
+}
+
+.login a{
+  color:#0b5cff;
+  font-weight:700;
+  text-decoration:none;
+}
+
+.note{
+  margin-top:18px;
+  background:#f1f5ff;
+  padding:14px;
+  border-radius:12px;
+  color:#40506b;
+  font-size:13px;
+  line-height:1.5;
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a href="../index.html" class="back">←</a>
+    <div class="logo">🔧 Mule QuickFix</div>
+  </div>
+</header>
+
+<main class="container">
+
+  <div class="card">
+
+    <h1>Join as a Technician</h1>
+
+    <p class="intro">
+      Create your technician account and start finding
+      service jobs that match your skills.
+    </p>
+
+
+    <form id="registerForm">
+
+      <label for="name">Full Name</label>
+
+      <input
+        type="text"
+        id="name"
+        placeholder="Enter your full name"
+        required
+      >
+
+
+      <label for="phone">Phone Number</label>
+
+      <input
+        type="tel"
+        id="phone"
+        placeholder="e.g. 0971234567"
+        required
+      >
+
+
+      <label for="email">Email Address</label>
+
+      <input
+        type="email"
+        id="email"
+        placeholder="Enter your email"
+        required
+      >
+
+
+      <label for="password">Password</label>
+
+      <input
+        type="password"
+        id="password"
+        placeholder="At least 6 characters"
+        minlength="6"
+        required
+      >
+
+
+      <label for="location">Operating Location</label>
+
+      <input
+        type="text"
+        id="location"
+        placeholder="e.g. Kitwe"
+        required
+      >
+
+      <div class="help">
+        Enter the main area where you normally provide services.
+      </div>
+
+
+      <label>Services You Provide</label>
+
+      <div class="services">
+
+        <label class="service">
+          <input
+            type="checkbox"
+            name="service"
+            value="Plumbing"
+          >
+          Plumbing
+        </label>
+
+        <label class="service">
+          <input
+            type="checkbox"
+            name="service"
+            value="Electrical"
+          >
+          Electrical
+        </label>
+
+        <label class="service">
+          <input
+            type="checkbox"
+            name="service"
+            value="AC & Refrigeration"
+          >
+          AC & Refrigeration
+        </label>
+
+        <label class="service">
+          <input
+            type="checkbox"
+            name="service"
+            value="Vehicle Repairs"
+          >
+          Vehicle Repairs
+        </label>
+
+        <label class="service">
+          <input
+            type="checkbox"
+            name="service"
+            value="Home Repairs"
+          >
+          Home Repairs
+        </label>
+
+        <label class="service">
+          <input
+            type="checkbox"
+            name="service"
+            value="Phone & Computer"
+          >
+          Phone & Computer
+        </label>
+
+        <label class="service">
+          <input
+            type="checkbox"
+            name="service"
+            value="Appliance Repair"
+          >
+          Appliance Repair
+        </label>
+
+        <label class="service">
+          <input
+            type="checkbox"
+            name="service"
+            value="Other Services"
+          >
+          Other Services
+        </label>
+
+      </div>
+
+
+      <div class="help">
+        Select at least one service.
+      </div>
+
+
+      <button
+        type="submit"
+        class="submit"
+        id="submitBtn"
+      >
+        CREATE TECHNICIAN ACCOUNT
+      </button>
+
+    </form>
+
+
+    <div
+      id="message"
+      class="message"
+    ></div>
+
+
+    <div class="note">
+      💰 <strong>How payment works:</strong><br>
+      You deal directly with the customer for payment.
+      Mule QuickFix does not hold your job payment.
+      Mule QuickFix charges a 15% commission on the final
+      agreed job price.
+    </div>
+
+
+    <div class="login">
+      Already have an account?
+      <a href="../login.html">Login</a>
+    </div>
+
+  </div>
+
+</main>
+
+
+<script type="module">
+
+import { auth, db } from "../firebase.js";
+
+import {
+  createUserWithEmailAndPassword,
+  updateProfile
+} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+
+import {
+  ref,
+  set,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
+
+
+const form =
+  document.getElementById("registerForm");
+
+const submitBtn =
+  document.getElementById("submitBtn");
+
+const message =
+  document.getElementById("message");
+
+
+function showMessage(text,type){
+
+  message.textContent = text;
+
+  message.className =
+    "message " + type;
+
+  message.style.display = "block";
+
+}
+
+
+form.addEventListener("submit", async (e)=>{
+
+  e.preventDefault();
+
+
+  const name =
+    document.getElementById("name")
+      .value.trim();
+
+  const phone =
+    document.getElementById("phone")
+      .value.trim();
+
+  const email =
+    document.getElementById("email")
+      .value.trim();
+
+  const password =
+    document.getElementById("password")
+      .value;
+
+  const location =
+    document.getElementById("location")
+      .value.trim();
+
+
+  const selectedServices =
+    Array.from(
+      document.querySelectorAll(
+        'input[name="service"]:checked'
+      )
+    ).map(
+      checkbox => checkbox.value
+    );
+
+
+  if(selectedServices.length === 0){
+
+    showMessage(
+      "Please select at least one service.",
+      "error"
+    );
+
+    return;
+  }
+
+
+  submitBtn.disabled = true;
+
+  submitBtn.textContent =
+    "CREATING ACCOUNT...";
+
+
+  try{
+
+    /*
+      Create Firebase Authentication account.
+    */
+
+    const credential =
+      await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
+
+    const user =
+      credential.user;
+
+
+    await updateProfile(user,{
+      displayName:name
+    });
+
+
+    /*
+      Create technician profile.
+    */
+
+    await set(
+      ref(db,"users/" + user.uid),
+      {
+        uid:user.uid,
+
+        name:name,
+
+        phone:phone,
+
+        email:email,
+
+        role:"technician",
+
+        active:true,
+
+        operatingLocation:location,
+
+        services:selectedServices,
+
+        jobsCompleted:0,
+
+        commissionOwed:0,
+
+        commissionPaid:0,
+
+        createdAt:serverTimestamp(),
+
+        updatedAt:serverTimestamp()
+      }
+    );
+
+
+    showMessage(
+      "Technician account created successfully! Redirecting to login...",
+      "success"
+    );
+
+
+    setTimeout(()=>{
+
+      window.location.href =
+        "../login.html";
+
+    },1600);
+
+
+  }catch(error){
+
+    console.error(error);
+
+    let text =
+      "Registration failed. Please try again.";
+
+
+    if(
+      error.code ===
+      "auth/email-already-in-use"
+    ){
+
+      text =
+        "This email is already registered. Please login.";
+
+    }
+
+    else if(
+      error.code ===
+      "auth/invalid-email"
+    ){
+
+      text =
+        "Please enter a valid email address.";
+
+    }
+
+    else if(
+      error.code ===
+      "auth/weak-password"
+    ){
+
+      text =
+        "Password must contain at least 6 characters.";
+
+    }
+
+    else if(
+      error.code ===
+      "auth/network-request-failed"
+    ){
+
+      text =
+        "Network error. Check your internet connection.";
+
+    }
+
+
+    showMessage(text,"error");
+
+    submitBtn.disabled = false;
+
+    submitBtn.textContent =
+      "CREATE TECHNICIAN ACCOUNT";
+
+  }
+
+});
+
+</script>
+
+</body>
+</html>
